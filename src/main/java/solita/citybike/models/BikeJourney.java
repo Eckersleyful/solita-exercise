@@ -24,14 +24,9 @@ public class BikeJourney {
     @Column(name = "departure_station_id")
     private String departureStationId;
 
-    @Column(name = "departure_station_name")
-    private String departureStationName;
-
     @Column(name = "return_station_id")
     private String returnStationId;
 
-    @Column(name = "return_station_name")
-    private String returnStationName;
 
     @Column(name = "covered_distance")
     private double coveredDistance;
@@ -72,13 +67,6 @@ public class BikeJourney {
         this.departureStationId = departureStationId;
     }
 
-    public String getDepartureStationName() {
-        return departureStationName;
-    }
-
-    public void setDepartureStationName(String departureStationName) {
-        this.departureStationName = departureStationName;
-    }
 
     public String getReturnStationId() {
         return returnStationId;
@@ -86,14 +74,6 @@ public class BikeJourney {
 
     public void setReturnStationId(String returnStationId) {
         this.returnStationId = returnStationId;
-    }
-
-    public String getReturnStationName() {
-        return returnStationName;
-    }
-
-    public void setReturnStationName(String returnStationName) {
-        this.returnStationName = returnStationName;
     }
 
     public double getCoveredDistance() {
@@ -116,13 +96,11 @@ public class BikeJourney {
 
     }
 
-    public BikeJourney(LocalDateTime departureDate, LocalDateTime returnDate, String departureStationId, String departureStationName, String returnStationId, String returnStationName, double coveredDistance, int duration) {
+    public BikeJourney(LocalDateTime departureDate, LocalDateTime returnDate, String departureStationId,  String returnStationId, double coveredDistance, int duration) {
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.departureStationId = departureStationId;
-        this.departureStationName = departureStationName;
         this.returnStationId = returnStationId;
-        this.returnStationName = returnStationName;
         this.coveredDistance = coveredDistance;
         this.duration = duration;
     }
