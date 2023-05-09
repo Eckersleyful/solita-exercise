@@ -1,1 +1,11 @@
 /.idea/
+/solita-backend.iml
+
+*.class
+
+*.log
+
+*.jar
+*.war
+*.nar
+*.ear
