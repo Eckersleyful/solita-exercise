@@ -14,8 +14,10 @@ public class BikeStation {
     @JsonIgnore
     private Integer id;
 
+    @Column(name = "station_id")
     private Integer stationId;
 
+    @Column(name = "station_name")
     private String stationName;
 
     public Integer getId() {

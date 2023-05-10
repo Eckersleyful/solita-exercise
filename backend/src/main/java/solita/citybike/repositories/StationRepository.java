@@ -16,5 +16,11 @@ public interface StationRepository extends PagingAndSortingRepository<BikeStatio
 
 
     Iterable<BikeStation> saveAll(Iterable<BikeStation> allStations);
+    BikeStation save(BikeStation station);
+
+
+    List<BikeStation> findByStationId(Integer id);
+
+    Iterable<BikeJourney> deleteAll();
 
 }

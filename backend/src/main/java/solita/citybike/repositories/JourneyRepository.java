@@ -21,5 +21,5 @@ public interface JourneyRepository extends PagingAndSortingRepository<BikeJourne
 
     Iterable<BikeJourney> saveAll(Iterable<BikeJourney> validJourneys);
 
-
+    Iterable<BikeJourney> deleteAll();
 }

@@ -21,18 +21,52 @@ public class BikeJourney {
     @Column(name = "return_time")
     private LocalDateTime returnDate;
 
-    @Column(name = "departure_station_id")
-    private String departureStationId;
+    @OneToOne
+    private BikeStation departureStation;
 
-    @Column(name = "return_station_id")
-    private String returnStationId;
-
+    @OneToOne
+    private BikeStation returnStation;
 
     @Column(name = "covered_distance")
     private double coveredDistance;
 
     @Column(name = "duration")
+
     private int duration;
+
+    public BikeJourney(){
+
+    }
+
+    public BikeJourney(LocalDateTime departureDate, LocalDateTime returnDate, double coveredDistance, int duration) {
+
+        this.departureDate = departureDate;
+        this.returnDate = returnDate;
+        this.coveredDistance = coveredDistance;
+        this.duration = duration;
+    }
+
+    public BikeStation getDepartureStation() {
+        return departureStation;
+    }
+
+    public void setDepartureStation(BikeStation departureStation) {
+        this.departureStation = departureStation;
+    }
+
+    public BikeStation getReturnStation() {
+        return returnStation;
+    }
+
+    public void setReturnStation(BikeStation returnStation) {
+        this.returnStation = returnStation;
+    }
+
+    public void setCoveredDistance(double coveredDistance) {
+        this.coveredDistance = coveredDistance;
+    }
+
+
 
 
     public Long getId() {
@@ -59,23 +93,6 @@ public class BikeJourney {
         this.returnDate = returnDate;
     }
 
-    public String getDepartureStationId() {
-        return departureStationId;
-    }
-
-    public void setDepartureStationId(String departureStationId) {
-        this.departureStationId = departureStationId;
-    }
-
-
-    public String getReturnStationId() {
-        return returnStationId;
-    }
-
-    public void setReturnStationId(String returnStationId) {
-        this.returnStationId = returnStationId;
-    }
-
     public double getCoveredDistance() {
         return coveredDistance;
     }
@@ -92,16 +109,6 @@ public class BikeJourney {
         this.duration = duration;
     }
 
-    public BikeJourney(){
 
-    }
 
-    public BikeJourney(LocalDateTime departureDate, LocalDateTime returnDate, String departureStationId,  String returnStationId, double coveredDistance, int duration) {
-        this.departureDate = departureDate;
-        this.returnDate = returnDate;
-        this.departureStationId = departureStationId;
-        this.returnStationId = returnStationId;
-        this.coveredDistance = coveredDistance;
-        this.duration = duration;
-    }
 }

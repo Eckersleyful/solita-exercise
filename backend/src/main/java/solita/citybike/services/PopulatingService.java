@@ -41,6 +41,9 @@ public class PopulatingService {
 
     public boolean populateData() {
 
+        this.repository.deleteAll();
+
+        this.stationRepository.deleteAll();
 
         Unzipper unzipper = new Unzipper();
         ArrayList<String[]> csvBikeJourneys = unzipper.getJourneysFromCsv();
@@ -48,8 +51,6 @@ public class PopulatingService {
         ArrayList<BikeJourney> validJourneys = new ArrayList<>();
 
         HashMap<Integer, BikeStation> allStations = new HashMap<>();
-
-
 
         for(String [] s : csvBikeJourneys){
 
@@ -64,33 +65,50 @@ public class PopulatingService {
 
                 BikeJourney journey = createJourneyFromEntry(journeyEntry);
 
+                if(journey == null){
+                    continue;
+                }
+
+
+
                 BikeStation departStation = createStationFromEntry(journeyEntry, true);
 
                 BikeStation returnStation = createStationFromEntry(journeyEntry, false);
 
-                if(departStation != null && isStationNew(departStation, allStations)){
+                if(departStation == null || returnStation == null){
+                    continue;
+                }
+
+                if(isStationNew(departStation, allStations)){
+                    departStation = this.stationRepository.save(departStation);
                     allStations.put(departStation.getStationId(), departStation);
                 }
+                else{
+                    departStation = this.stationRepository.findByStationId(departStation.getStationId()).get(0);
+                }
 
-                if(returnStation != null && isStationNew(returnStation, allStations)){
+                if(isStationNew(returnStation, allStations)){
+                    returnStation = this.stationRepository.save(returnStation);
                     allStations.put(returnStation.getStationId(), returnStation);
+
+                }
+                else{
+                    returnStation = this.stationRepository.findByStationId(departStation.getStationId()).get(0);
                 }
 
 
-                if(journey != null){
 
-                    validJourneys.add(journey);
+                journey.setDepartureStation(departStation);
+                journey.setReturnStation(returnStation);
 
-                }
+                validJourneys.add(journey);
+
 
             }
             Logger.info("Dumping file");
             saveInBatch(validJourneys);
             validJourneys.clear();
         }
-
-        this.stationRepository.saveAll(allStations.values());
-
 
         return true;
 
@@ -180,6 +198,7 @@ public class PopulatingService {
 
         int journeyDuration;
 
+
         try{
             coveredDistance = Double.parseDouble(entryValues[6]);
 
@@ -195,11 +214,9 @@ public class PopulatingService {
             return null;
         }
 
-        String departStationId = entryValues[2];
 
-        String returnStationid = entryValues[4];
 
-        return new BikeJourney(departureDate, returnDate, departStationId, returnStationid, coveredDistance, journeyDuration);
+        return new BikeJourney(departureDate, returnDate, coveredDistance, journeyDuration);
 
 
     }
