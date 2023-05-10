@@ -49,9 +49,8 @@ public class JourneyService {
 
     }
 
-    public String test() {
-        return "cat";
+    public Integer getJourneyCount(){
+        return this.journeyRepository.getJourneyCount();
     }
-
 
 }

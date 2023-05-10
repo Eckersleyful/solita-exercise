@@ -12,7 +12,6 @@ public class BikeJourney {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGen")
     @SequenceGenerator(name = "seqGen", sequenceName = "seq", initialValue = 1)
-    @JsonIgnore
     private Long id;
 
     @Column(name = "departure_time")

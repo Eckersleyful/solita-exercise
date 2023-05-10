@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("journeys")
+@CrossOrigin(origins = "http://localhost:3000")
 public class JourneyController {
 
     @Autowired
@@ -37,9 +38,10 @@ public class JourneyController {
 
     }
 
-    @GetMapping("/hello")
-    public @ResponseBody String greeting() {
-        return this.journeyService.test();
+    @GetMapping("/count")
+    public ResponseEntity<Integer> journeyCount(){
+        return new ResponseEntity<Integer>(this.journeyService.getJourneyCount(), new HttpHeaders(), HttpStatus.OK);
+
     }
 
     @PostMapping("/populate")
