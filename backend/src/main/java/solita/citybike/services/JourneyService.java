@@ -49,6 +49,9 @@ public class JourneyService {
 
     }
 
+    public String test() {
+        return "cat";
+    }
 
 
 }

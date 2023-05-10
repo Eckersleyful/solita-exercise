@@ -18,14 +18,10 @@ import java.util.List;
 public class JourneyController {
 
     @Autowired
-    private PopulatingService populatingService;
+    public PopulatingService populatingService;
 
     @Autowired
-    private JourneyService journeyService;
-
-    @Autowired
-    private StationService stationService;
-
+    public JourneyService journeyService;
 
     @GetMapping
     public ResponseEntity<List<BikeJourney>> getAllJourneys(
@@ -39,6 +35,11 @@ public class JourneyController {
         return new ResponseEntity<List<BikeJourney>>(journeyList, new HttpHeaders(), HttpStatus.OK);
 
 
+    }
+
+    @GetMapping("/hello")
+    public @ResponseBody String greeting() {
+        return this.journeyService.test();
     }
 
     @PostMapping("/populate")
