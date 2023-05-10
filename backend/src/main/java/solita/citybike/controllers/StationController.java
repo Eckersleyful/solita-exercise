@@ -31,7 +31,7 @@ public class StationController {
     public ResponseEntity<List<BikeStation>> getAllJourneys(
             @RequestParam(defaultValue = "0") Integer pageNumber,
             @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "id") String sortBy
+            @RequestParam(defaultValue = "stationName") String sortBy
     ){
         List<BikeStation> journeyList = this.stationService.getAllStations(pageNumber, pageSize, sortBy);
 

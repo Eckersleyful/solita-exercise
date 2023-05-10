@@ -48,4 +48,13 @@ public class BikeStation {
         this.stationName = name;
 
     }
+
+    public BikeStation() {
+    }
+
+    public BikeStation(Integer id, Integer stationId, String stationName) {
+        this.id = id;
+        this.stationId = stationId;
+        this.stationName = stationName;
+    }
 }
