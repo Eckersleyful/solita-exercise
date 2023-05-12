@@ -23,4 +23,7 @@ public interface StationRepository extends PagingAndSortingRepository<BikeStatio
 
     Iterable<BikeJourney> deleteAll();
 
+    @Query(value = "SELECT COUNT(id) FROM stations", nativeQuery = true)
+    Integer getStationCount();
+
 }

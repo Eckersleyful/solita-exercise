@@ -37,10 +37,21 @@ public class JourneyService {
 
     public List<BikeJourney> getAllJourneys(Integer pageNumber, Integer pageSize, String sortBy) {
 
-        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Sort sort;
+
+        /* Is there a more sophisticated way to do this, feels odd*/
+        if(sortBy.equals("departureStation")){
+            sort = Sort.by("departureStation.stationName");
+        }
+        else{
+            sort = Sort.by(sortBy);
+        }
+
+        Pageable paging = PageRequest.of(pageNumber, pageSize, sort);
 
         Page<BikeJourney> pagedResult = journeyRepository.findAll(paging);
 
+        //We still go through with the request even if the query returns nothing
         if(pagedResult.isEmpty()){
             return new ArrayList<>();
         }

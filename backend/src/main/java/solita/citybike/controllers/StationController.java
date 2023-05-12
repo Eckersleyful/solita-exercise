@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("stations")
+
 public class StationController {
 
     @Autowired
@@ -37,8 +38,13 @@ public class StationController {
 
 
         return new ResponseEntity<List<BikeStation>>(journeyList, new HttpHeaders(), HttpStatus.OK);
+    }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> stationCount(){
+        return new ResponseEntity<Integer>(this.stationService.getStationCount(), new HttpHeaders(), HttpStatus.OK);
 
     }
+
 
 }

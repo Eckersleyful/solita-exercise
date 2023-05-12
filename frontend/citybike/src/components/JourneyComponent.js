@@ -14,34 +14,113 @@ class JourneyComponent extends React.Component {
 
             currentPage: 1,
 
-            recordsPerPage: 15,
+            recordsPerPage: 15, 
             
             totalPages: 0,
 
-            sortBy: "id"
+            sortBy: "id",
+
+            sortParameters : {
+                'Departure time': "departureDate",
+                'Return time': "returnDate",
+                'Departure station': "departureStation",
+                'Return station': 'returnStation',
+                'Distance': 'coveredDistance',
+                'Duration': 'duration'
+            }
 
         }
     }
 
     componentDidMount() {
         this.fetchJourneysByPage(this.state.currentPage);
-        console.log(this.state)
         this.fetchTotalPages(this.state.recordsPerPage); 
     }
+
 
     fetchTotalPages(recordsPerPage){
         axios.get("http://localhost:8080/journeys/count")
         .then(response => response.data).then((data) => {
             this.setState({
-                totalPages: Math.round(data / recordsPerPage)
+                totalPages: Math.ceil(data / recordsPerPage)
 
             })
         })
     }
 
+    showLastPage = () => {
+        
+        if(this.state.currentPage >= this.state.totalPages){
+            return;
+        }
+
+        this.setState({
+            currentPage: this.state.totalPages
+        }) 
+
+        this.fetchJourneysByPage(this.state.totalPages)
+
+    }
+
+    showFirstPage = () => {
+        
+        let firstPage = 1;
+
+        if(this.state.currentPage < firstPage){
+            return
+        }
+            
+        this.setState({
+            currentPage: firstPage
+        })
+
+        this.fetchJourneysByPage(firstPage)
+
+    }
+
+    showNextPage = () => {
+        
+        if(this.state.currentPage >= this.state.totalPages){
+            return;
+        }
+
+        const newPage = this.state.currentPage + 1;
+
+        this.setState({
+            currentPage: newPage
+        })
+
+        this.fetchJourneysByPage(newPage);
+
+    }
+
+    changeSortingParameter = (event) => {
+        
+        this.setState({
+            sortBy: event.target.value
+        })
+
+        this.fetchJourneysByPage(1);
+    }
+
+    showPreviousPage = () => {
+
+        if(this.state.currentPage <= 1){
+            return;
+        }
+
+        const newPage = this.state.currentPage - 1;
+
+        this.setState({
+            currentPage: newPage
+        })
+
+        this.fetchJourneysByPage(newPage);
+
+    }
+
 
     fetchJourneysByPage(pageNumber) {
-
 
         pageNumber -= 1
 
@@ -52,13 +131,14 @@ class JourneyComponent extends React.Component {
                     journeys: data
 
                 })
-
             })
     }
 
     render() {
-        console.log(this.state)
         const { journeys, currentPage, recordsPerPage, totalPages } = this.state;
+
+        const sortMap = this.state.sortParameters;
+        
         return (
             <div>
 
@@ -105,13 +185,23 @@ class JourneyComponent extends React.Component {
                             <div class="clearfix"></div>
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination">
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPrevPage}>Previous</a></li>
+                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
                                     <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
                                     <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showNextPage}>Next</a></li>
                                     <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showLastPage}>Last</a></li>
                                 </ul>
                             </nav>
                         </div>
+                        
+                        <div>
+                            <select onChange={this.changeSortingParameter}>
+                            <option>Sort By</option>
+                            {Object.entries(sortMap).map(([key, value]) => (
+                                <option value = {value}>{key}</option>
+                            ))}
+                            </select>
+                        </div>
+
                     </table>
                 </div>
             </div>

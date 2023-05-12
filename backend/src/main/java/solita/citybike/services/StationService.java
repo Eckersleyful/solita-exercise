@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.tinylog.Logger;
 import solita.citybike.models.BikeJourney;
 import solita.citybike.models.BikeStation;
 import solita.citybike.repositories.JourneyRepository;
@@ -27,6 +28,7 @@ public class StationService {
 
     public List<BikeStation> getAllStations(Integer pageNumber, Integer pageSize, String sortBy) {
 
+
         Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
 
         Page<BikeStation> pagedResult = stationRepository.findAll(paging);
@@ -39,6 +41,10 @@ public class StationService {
 
     }
 
+
+    public Integer getStationCount(){
+        return this.stationRepository.getStationCount();
+    }
 
 
 }
