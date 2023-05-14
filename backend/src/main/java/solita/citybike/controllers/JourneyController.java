@@ -27,9 +27,10 @@ public class JourneyController {
     public ResponseEntity<List<BikeJourney>> getAllJourneys(
             @RequestParam(defaultValue = "0") Integer pageNumber,
             @RequestParam(defaultValue = "15") Integer pageSize,
-            @RequestParam(defaultValue = "id") String sortBy
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String order
     ){
-        List<BikeJourney> journeyList = this.journeyService.getAllJourneys(pageNumber, pageSize, sortBy);
+        List<BikeJourney> journeyList = this.journeyService.getAllJourneys(pageNumber, pageSize, sortBy, order);
 
 
         return new ResponseEntity<List<BikeJourney>>(journeyList, new HttpHeaders(), HttpStatus.OK);

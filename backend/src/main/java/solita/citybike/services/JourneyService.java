@@ -35,7 +35,7 @@ public class JourneyService {
 
 
 
-    public List<BikeJourney> getAllJourneys(Integer pageNumber, Integer pageSize, String sortBy) {
+    public List<BikeJourney> getAllJourneys(Integer pageNumber, Integer pageSize, String sortBy, String order) {
 
         Sort sort;
 
@@ -43,9 +43,22 @@ public class JourneyService {
         if(sortBy.equals("departureStation")){
             sort = Sort.by("departureStation.stationName");
         }
+        else if(sortBy.equals("returnStation")){
+            sort = Sort.by("returnStation.stationName");
+        }
         else{
             sort = Sort.by(sortBy);
         }
+
+
+        /*This can't be right*/
+        if(order.equals("asc")){
+            sort = sort.ascending();
+        }
+        else if(order.equals("desc")){
+            sort = sort.descending();
+        }
+
 
         Pageable paging = PageRequest.of(pageNumber, pageSize, sort);
 
