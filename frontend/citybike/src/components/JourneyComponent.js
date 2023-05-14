@@ -200,7 +200,7 @@ class JourneyComponent extends React.Component {
                                 <option value = {value}>{key}</option>
                             ))}
                             </select>
-                        </div>
+                        </div> 
 
                     </table>
                 </div>
