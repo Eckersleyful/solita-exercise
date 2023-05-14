@@ -38,8 +38,30 @@ class JourneyComponent extends React.Component {
 
             })
         })
+        .catch(function(error) {
+            console.log(error)
+        })
     }
 
+    fetchStationsByPage(pageNumber) {
+
+
+        pageNumber -= 1
+
+        axios.get("http://localhost:8080/stations?pageNumber=" + pageNumber
+            + "&pageSize=" + this.state.recordsPerPage)
+            .then(response => response.data).then((data) => {
+                this.setState({
+                    stations: data
+
+                })
+
+            })
+            .catch(function(error) {
+                console.log(error)
+            })
+
+    }
     showLastPage = () => {
         
         if(this.state.currentPage >= this.state.totalPages){
@@ -105,21 +127,6 @@ class JourneyComponent extends React.Component {
 
     }
 
-    fetchStationsByPage(pageNumber) {
-
-
-        pageNumber -= 1
-
-        axios.get("http://localhost:8080/stations?pageNumber=" + pageNumber
-            + "&pageSize=" + this.state.recordsPerPage)
-            .then(response => response.data).then((data) => {
-                this.setState({
-                    stations: data
-
-                })
-
-            })
-    }
 
     render() {
         const { stations, currentPage, recordsPerPage, totalPages } = this.state;

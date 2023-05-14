@@ -5,6 +5,7 @@ import StationComponent from './components/StationComponent'
 function App() {
   return (
     <div className="App">
+      <div className= "center-div">
           <Tabs>
         <div label="Journeys">
           <JourneyComponent></JourneyComponent>
@@ -13,7 +14,7 @@ function App() {
           <StationComponent></StationComponent>
         </div>
       </Tabs>
-            
+      </div> 
     </div>
   );
 }

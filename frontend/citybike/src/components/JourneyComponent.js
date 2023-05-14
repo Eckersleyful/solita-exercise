@@ -20,6 +20,8 @@ class JourneyComponent extends React.Component {
 
             sortBy: "id",
 
+            order: "asc",
+
             sortParameters : {
                 'Departure time': "departureDate",
                 'Return time': "returnDate",
@@ -27,7 +29,14 @@ class JourneyComponent extends React.Component {
                 'Return station': 'returnStation',
                 'Distance': 'coveredDistance',
                 'Duration': 'duration'
-            }
+            },
+
+            orderParameters : {
+                'Ascending': 'asc',
+                'Descending': 'desc'
+            },
+
+            pageSizeParameters : [5, 10, 15, 25, 50, 100]
 
         }
     }
@@ -39,13 +48,43 @@ class JourneyComponent extends React.Component {
 
 
     fetchTotalPages(recordsPerPage){
+
+
         axios.get("http://localhost:8080/journeys/count")
-        .then(response => response.data).then((data) => {
+        .then((response) => {
             this.setState({
-                totalPages: Math.ceil(data / recordsPerPage)
+                totalPages: Math.ceil(response.data / recordsPerPage)
 
             })
         })
+        .catch(function (error) {
+            console.log(error.toJSON());
+        })
+
+
+
+    }
+
+    fetchJourneysByPage(pageNumber, searchParameter = this.state.sortBy, order = this.state.order,
+        pageSize = this.state.recordsPerPage) {
+
+        pageNumber -= 1
+
+        console.log(searchParameter)
+        console.log(order)
+
+        axios.get("http://localhost:8080/journeys?pageNumber=" + pageNumber
+        + "&pageSize=" + pageSize + "&sortBy=" + searchParameter + "&order=" + order)
+        .then((response) => {
+            this.setState({
+                journeys: response.data
+            })
+        })
+        .catch(function (error) {
+            console.log(error.toJSON());
+        })
+
+
     }
 
     showLastPage = () => {
@@ -94,14 +133,7 @@ class JourneyComponent extends React.Component {
 
     }
 
-    changeSortingParameter = (event) => {
-        
-        this.setState({
-            sortBy: event.target.value
-        })
 
-        this.fetchJourneysByPage(1);
-    }
 
     showPreviousPage = () => {
 
@@ -119,32 +151,50 @@ class JourneyComponent extends React.Component {
 
     }
 
+    changeSortingParameter = (event) => {
+        const parameter = event.target.value
+        this.setState({
+            sortBy: parameter
+        })
 
-    fetchJourneysByPage(pageNumber) {
-
-        pageNumber -= 1
-
-        axios.get("http://localhost:8080/journeys?pageNumber=" + pageNumber
-            + "&pageSize=" + this.state.recordsPerPage + "&sortBy=" + this.state.sortBy)
-            .then(response => response.data).then((data) => {
-                this.setState({
-                    journeys: data
-
-                })
-            })
     }
 
-    render() {
-        const { journeys, currentPage, recordsPerPage, totalPages } = this.state;
+    changeOrderingParameter = (event) => {
+        
+        const newOrder = event.target.value
 
+        this.setState({
+            order: newOrder
+        })
+    }
+
+    changePageSizeParameter = (event) => {
+        
+        const size = event.target.value
+
+        this.setState({
+            recordsPerPage: size
+        })
+    }
+
+    
+
+    render() {
+        
+        const { journeys, currentPage, recordsPerPage, totalPages } = this.state;
+        
         const sortMap = this.state.sortParameters;
+        const orderMap = this.state.orderParameters;
+        const pageSizes = this.state.pageSizeParameters;
         
         return (
-            <div>
-
-                <h1 className="text-center mt-5 ">All bike journeys</h1>
-                <div className="container mt-2">
-                    <table className="table table-bordered border-info shadow">
+            <div className = "main-div">
+                <div className = "center-div">
+                    <h1>Helsinki Citybike journeys</h1>
+                </div>
+                
+                <div className = "data-table-parent center-div">
+                    <table className = "data-table">
                         <thead>
                             <tr>
                                 <th>number</th>
@@ -158,7 +208,7 @@ class JourneyComponent extends React.Component {
                         </thead>
                         <tbody>
                             {journeys.length === 0 ?
-                                <tr align="center"><td colSpan="5">No journeys found</td></tr> :
+                                <tr><td>No journeys found</td></tr> :
                                 journeys.map(
                                     (journey, index) => (
 
@@ -177,32 +227,56 @@ class JourneyComponent extends React.Component {
                             }
                         </tbody>
                     </table>
-                    <table className="table">
+                </div>
+                <div className = "center-div">
+                    <table>
                         <div style={{ float: 'left', fontFamily: 'monospace', color: '#0275d8' }}>
                             Page {currentPage} of {totalPages}
                         </div>
-                        <div style={{ float: 'right' }}>
-                            <div class="clearfix"></div>
+                        <div>
+                            <div className="clearfix"></div>
                             <nav aria-label="Page navigation example">
-                                <ul class="pagination">
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showNextPage}>Next</a></li>
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showLastPage}>Last</a></li>
+                                <ul className="pagination">
+                                    <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
+                                    <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
+                                    <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showNextPage}>Next</a></li>
+                                    <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showLastPage}>Last</a></li>
                                 </ul>
                             </nav>
                         </div>
-                        
-                        <div>
-                            <select onChange={this.changeSortingParameter}>
-                            <option>Sort By</option>
-                            {Object.entries(sortMap).map(([key, value]) => (
-                                <option value = {value}>{key}</option>
-                            ))}
-                            </select>
-                        </div> 
-
+                    
                     </table>
+                </div>
+                <div className = "sorting-main-div center-div">
+                    <div className = "sorting-main-div-child">
+                        <select onChange={this.changeSortingParameter}>
+                        <option>Sort By</option>
+                        {Object.entries(sortMap).map(([key, value]) => (
+                            <option value = {value}>{key}</option>
+                        ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <select onChange={this.changeOrderingParameter}>
+                        <option>Order By</option>
+                        {Object.entries(orderMap).map(([key, value]) => (
+                            <option value = {value}>{key}</option>
+                        ))}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <select onChange={this.changePageSizeParameter}>
+                        <option>Page Size</option>
+                        {pageSizes.map((size) => (
+                            <option value = {size} key = {size}>{size}</option>
+                        ))}
+                        </select>
+                    </div>
+                    <button onClick={() => this.fetchJourneysByPage(1)}>
+                        Sort
+                    </button>
                 </div>
             </div>
         )
