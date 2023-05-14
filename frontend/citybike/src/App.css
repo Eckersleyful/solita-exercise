@@ -1,20 +1,64 @@
-.data-table thead {
-  color: black;
-  background: black;
+#table-header tr{
+  background: #1f0033;
+  color: white;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+
 }
 
-.data-table td {
-  color: solid 2px;
-  padding: 0.2rem;
+h1 {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 0.5rem;
 }
 
-.data-table th {
 
+.data-table td, #table-header th{
+  padding: 12px 15px 12px 15px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+
+.tab-list {
+  display: flex;
+}
+
+.tab-header-div  {
+  flex: 1;
+}
+
+.tab-header-div li {
+  list-style: none;
+  padding: 15px;
+  border-radius: 20%;
+  border: 2px solid #1f0033;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 1.5rem;
+  transition: transform .3s;
+}
+
+.tab-header-div li:hover {
+  transform: scale(1.1);
+  cursor: default;
+}
+
+
+
+
+.data-table tr:nth-child(1n) {
+  background-color: white;
+}
+
+.data-table tr:nth-child(2n) {
+  background-color: #f2f2f2;
 }
 
 .data-table {
   border-spacing: 0px;
+
 }
+
+
 
 .center-div {
 

@@ -29,7 +29,7 @@ class Tab extends Component {
       }
   
       return (
-        <div className= "center-div">
+        <div className= "center-div tab-header-div">
           <li
             className={className}
             onClick={onClick}

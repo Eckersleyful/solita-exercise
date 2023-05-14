@@ -76,12 +76,18 @@ class JourneyComponent extends React.Component {
         axios.get("http://localhost:8080/journeys?pageNumber=" + pageNumber
         + "&pageSize=" + pageSize + "&sortBy=" + searchParameter + "&order=" + order)
         .then((response) => {
+
+            for(let x in response.data){
+                response.data[x].coveredDistance = Math.ceil(response.data[x].coveredDistance / 1000);
+                response.data[x].duration = Math.ceil(response.data[x].duration / 60); 
+            }
+
             this.setState({
                 journeys: response.data
             })
         })
         .catch(function (error) {
-            console.log(error.toJSON());
+            console.log(error);
         })
 
 
@@ -193,9 +199,9 @@ class JourneyComponent extends React.Component {
                     <h1>Helsinki Citybike journeys</h1>
                 </div>
                 
-                <div className = "data-table-parent center-div">
+                <div className = "data-table-wrapper center-div">
                     <table className = "data-table">
-                        <thead>
+                        <thead id = "table-header">
                             <tr>
                                 <th>number</th>
                                 <th>Departure time</th>
@@ -211,15 +217,14 @@ class JourneyComponent extends React.Component {
                                 <tr><td>No journeys found</td></tr> :
                                 journeys.map(
                                     (journey, index) => (
-
                                         <tr key={journey.id}>
                                             <td>{(recordsPerPage * (currentPage - 1)) + index + 1}</td>
-                                            <td>{journey.departureDate}</td>
-                                            <td>{journey.returnDate}</td>
+                                            <td>{journey.departureDate.split("T")[0]}<br></br>Klo {journey.departureDate.split("T")[1]}</td>
+                                            <td>{journey.returnDate.split("T")[0]}<br></br>Klo {journey.returnDate.split("T")[1]}</td>
                                             <td>{journey.departureStation.stationName}</td>
                                             <td>{journey.returnStation.stationName}</td>
-                                            <td>{journey.coveredDistance}</td>
-                                            <td>{journey.duration}</td>
+                                            <td>{journey.coveredDistance} km</td>
+                                            <td>{journey.duration} m</td>
 
                                         </tr>
                                     )
