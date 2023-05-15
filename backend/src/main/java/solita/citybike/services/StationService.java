@@ -46,5 +46,10 @@ public class StationService {
         return this.stationRepository.getStationCount();
     }
 
+    public Integer getDepartingStationCountByStationId(Integer id){
+
+        return this.stationRepository.getDepartingStationCountByStationId(id);
+    }
+
 
 }

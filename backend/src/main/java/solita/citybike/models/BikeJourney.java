@@ -2,6 +2,8 @@ package solita.citybike.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -15,22 +17,28 @@ public class BikeJourney {
     private Long id;
 
     @Column(name = "departure_time")
+    @NotNull(message = "Departure time is needed")
     private LocalDateTime departureDate;
 
     @Column(name = "return_time")
+    @NotNull(message = "Return time is needed")
     private LocalDateTime returnDate;
 
     @OneToOne
+    @NotNull(message = "Departure station is needed")
     private BikeStation departureStation;
 
     @OneToOne
+    @NotNull(message = "Return station is needed")
     private BikeStation returnStation;
 
+
     @Column(name = "covered_distance")
+    @NotNull(message = "Covered distance is needed")
     private double coveredDistance;
 
     @Column(name = "duration")
-
+    @NotNull(message = "Journey duration is needed")
     private int duration;
 
     public BikeJourney(){

@@ -21,6 +21,8 @@ public interface JourneyRepository extends PagingAndSortingRepository<BikeJourne
 
     Iterable<BikeJourney> saveAll(Iterable<BikeJourney> validJourneys);
 
+    BikeJourney save(BikeJourney journey);
+
     Iterable<BikeJourney> deleteAll();
 
     @Query(value = "SELECT COUNT(id) FROM journeys", nativeQuery = true)

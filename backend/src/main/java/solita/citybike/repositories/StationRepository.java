@@ -1,6 +1,7 @@
 package solita.citybike.repositories;
 
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -19,6 +20,7 @@ public interface StationRepository extends PagingAndSortingRepository<BikeStatio
     BikeStation save(BikeStation station);
 
 
+    @Cacheable("stations")
     List<BikeStation> findByStationId(Integer id);
 
     Iterable<BikeJourney> deleteAll();
@@ -26,4 +28,6 @@ public interface StationRepository extends PagingAndSortingRepository<BikeStatio
     @Query(value = "SELECT COUNT(id) FROM stations", nativeQuery = true)
     Integer getStationCount();
 
+    @Query(value = "SELECT COUNT(j.id) FROM journeys j JOIN stations s ON j.departure_station_id = s.id WHERE s.station_id = :id", nativeQuery = true)
+    Integer getDepartingStationCountByStationId(Integer id);
 }

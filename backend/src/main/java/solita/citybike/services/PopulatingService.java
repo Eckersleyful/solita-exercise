@@ -28,10 +28,10 @@ public class PopulatingService {
     private static final double MINIMUM_DISTANCE = 10.0;
 
     //After splitting the csv rows, this is the correct amount of elements there should be
-    private final int CORRECT_ENTRY_FIELDS = 8;
+    private static final int CORRECT_ENTRY_FIELDS = 8;
 
     //The size of the SQL batch inserts, has to correspond to spring.jpa.properties.hibernate.jdbc.batch_size in application.properties
-    private final int BATCH_SIZE = 30;
+    private static final int BATCH_SIZE = 25000;
 
     @Autowired
     private JourneyRepository repository;
@@ -55,14 +55,17 @@ public class PopulatingService {
         for(String [] s : csvBikeJourneys){
 
             boolean skipFirst = true;
-
+            int i = 0;
             for(String journeyEntry : s){
 
+
+                //Awkward way to skip the headers of the .csv
                 if(skipFirst){
                     skipFirst = false;
                     continue;
                 }
 
+                //Try creating a BikeJourney object from one csv line, returns null if invalid line
                 BikeJourney journey = createJourneyFromEntry(journeyEntry);
 
                 if(journey == null){
@@ -70,7 +73,7 @@ public class PopulatingService {
                 }
 
 
-
+                //Do the same for the station data found in the line, also returns null if invalid data
                 BikeStation departStation = createStationFromEntry(journeyEntry, true);
 
                 BikeStation returnStation = createStationFromEntry(journeyEntry, false);
@@ -79,59 +82,68 @@ public class PopulatingService {
                     continue;
                 }
 
-                if(isStationNew(departStation, allStations)){
-                    departStation = this.stationRepository.save(departStation);
-                    allStations.put(departStation.getStationId(), departStation);
-                }
-                else{
-                    departStation = this.stationRepository.findByStationId(departStation.getStationId()).get(0);
-                }
 
-                if(isStationNew(returnStation, allStations)){
-                    returnStation = this.stationRepository.save(returnStation);
-                    allStations.put(returnStation.getStationId(), returnStation);
+                //Check if the created station is not present in the DB, otherwise, query for it
+                departStation = handleNewStation(departStation, allStations);
+                returnStation = handleNewStation(returnStation, allStations);
 
-                }
-                else{
-                    returnStation = this.stationRepository.findByStationId(departStation.getStationId()).get(0);
-                }
-
-
-
+                //Set the station entity references to the created BikeJourney object
+                //So Journey HAS Station, but Station is unaware of Journeys
                 journey.setDepartureStation(departStation);
                 journey.setReturnStation(returnStation);
 
+                /*Add the ready BikeJourney to a list to be batch inserted after the whole
+                file has been processed
+                 */
                 validJourneys.add(journey);
+
+                i++;
+
+                if(validJourneys.size() > BATCH_SIZE){
+                    this.repository.saveAll(validJourneys);
+                    validJourneys.clear();
+                    System.out.println(i);
+                }
+
+
 
 
             }
             Logger.info("Dumping file");
-            saveInBatch(validJourneys);
+
+            //Batch insert the list to speed it up and clear the list for next files
+            this.repository.saveAll(validJourneys);
             validJourneys.clear();
+
         }
 
         return true;
 
     }
 
-    private void saveInBatch(ArrayList<BikeJourney> validJourneys){
-        for (int i = 0; i < validJourneys.size(); i = i + BATCH_SIZE) {
-
-            if( i + BATCH_SIZE > validJourneys.size()){
-                List<BikeJourney> batch = validJourneys.subList(i, validJourneys.size() - 1);
-                repository.saveAll(batch);
-                break;
-            }
-
-            List<BikeJourney> batch = validJourneys.subList(i, i + BATCH_SIZE);
-            repository.saveAll(batch);
-        }
-    }
-
     private boolean isStationNew(BikeStation station, HashMap<Integer, BikeStation> allStations) {
 
         return !allStations.containsKey(station.getStationId());
 
+    }
+
+    private BikeStation handleNewStation(BikeStation newStation, HashMap<Integer, BikeStation> allStations){
+
+        /*
+        If the new station is not yet in the DB, save it
+        and put the reference to the saved object into a HashMap to save DB lookups
+        for the next inserts
+        */
+
+        if(isStationNew(newStation, allStations)){
+            newStation = this.stationRepository.save(newStation);
+            allStations.put(newStation.getStationId(), newStation);
+        }
+        else{
+            newStation = this.stationRepository.findByStationId(newStation.getStationId()).get(0);
+        }
+
+        return newStation;
     }
 
     private BikeStation createStationFromEntry(String journeyEntry, boolean departure) {
