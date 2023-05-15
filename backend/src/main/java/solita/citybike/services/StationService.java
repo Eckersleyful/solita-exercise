@@ -6,8 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.tinylog.Logger;
-import solita.citybike.models.BikeJourney;
 import solita.citybike.models.BikeStation;
 import solita.citybike.repositories.JourneyRepository;
 import solita.citybike.repositories.StationRepository;

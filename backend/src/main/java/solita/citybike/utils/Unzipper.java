@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class Unzipper {
 
 
-    private final String ZIP_LOCATION = "csv/*";
+    private static final String ZIP_LOCATION = "csv/*";
 
     /**
      * Returns a list of files found at the constant of ZIP_LOCATION.
@@ -43,6 +43,14 @@ public class Unzipper {
 
     }
 
+    /**
+     * Iterates through the files returned by getAllCsvZips()
+     * and calls getZipAsStringArray on each file, to receive
+     * its content as unzipped String arrays.
+     *
+     * @return
+     */
+
     public ArrayList<String[]> getJourneysFromCsv(){
 
         Resource[] zipsInDir = getAllCsvZips();
@@ -63,6 +71,12 @@ public class Unzipper {
         return csvList;
    }
 
+
+    /**
+     * Takes a file, unzips it and reads it's content into a String array
+     * @param f The file to be unzipped and read
+     * @return An array of strings, if reading fails, an empty array of strings.
+     */
     private String[] getZipAsStringArray(Resource f) {
 
         try {
@@ -71,7 +85,7 @@ public class Unzipper {
 
             ArchiveEntry entry = null;
 
-            while((entry = sevenZFile.getNextEntry()) != null){
+            while ((entry = sevenZFile.getNextEntry()) != null) {
 
                 //Create a byte array with the size of the currently read entry
                 byte[] fileContent = new byte[(int) entry.getSize()];
@@ -83,6 +97,7 @@ public class Unzipper {
                 Create a new String from the read bytes and split it from newline operator to
                  get each line of the file as their own element
                  */
+                sevenZFile.close();
                 return new String(fileContent, StandardCharsets.UTF_8).split("\n");
 
             }
@@ -91,7 +106,7 @@ public class Unzipper {
             Logger.error(e);
         }
 
-        return null;
+        return new String[0];
     }
 
 

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 @Service
@@ -55,7 +54,7 @@ public class PopulatingService {
         for(String [] s : csvBikeJourneys){
 
             boolean skipFirst = true;
-            int i = 0;
+
             for(String journeyEntry : s){
 
 
@@ -72,7 +71,6 @@ public class PopulatingService {
                     continue;
                 }
 
-
                 //Do the same for the station data found in the line, also returns null if invalid data
                 BikeStation departStation = createStationFromEntry(journeyEntry, true);
 
@@ -81,7 +79,6 @@ public class PopulatingService {
                 if(departStation == null || returnStation == null){
                     continue;
                 }
-
 
                 //Check if the created station is not present in the DB, otherwise, query for it
                 departStation = handleNewStation(departStation, allStations);
@@ -97,16 +94,10 @@ public class PopulatingService {
                  */
                 validJourneys.add(journey);
 
-                i++;
-
                 if(validJourneys.size() > BATCH_SIZE){
                     this.repository.saveAll(validJourneys);
                     validJourneys.clear();
-                    System.out.println(i);
                 }
-
-
-
 
             }
             Logger.info("Dumping file");
