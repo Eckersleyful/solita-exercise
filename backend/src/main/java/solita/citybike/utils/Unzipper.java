@@ -79,9 +79,10 @@ public class Unzipper {
      */
     private String[] getZipAsStringArray(Resource f) {
 
+        SevenZFile sevenZFile = null;
         try {
 
-            SevenZFile sevenZFile = new SevenZFile(new File(f.getURI()));
+            sevenZFile = new SevenZFile(new File(f.getURI()));
 
             ArchiveEntry entry = null;
 
@@ -104,8 +105,13 @@ public class Unzipper {
 
         } catch (IOException e) {
             Logger.error(e);
+        } finally {
+            try {
+                sevenZFile.close();
+            } catch (IOException e) {
+                Logger.error(e);
+            }
         }
-
         return new String[0];
     }
 
