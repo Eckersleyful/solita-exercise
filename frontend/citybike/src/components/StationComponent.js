@@ -158,7 +158,7 @@ class JourneyComponent extends React.Component {
                     </table>
                     <table className="table">
                         <div style={{ float: 'left', fontFamily: 'monospace', color: '#0275d8' }}>
-                            Page {currentPage} of {totalPages}
+                            <p>Page {currentPage} of {totalPages}</p> 
                         </div>
                         <div style={{ float: 'right' }}>
                             <div className="clearfix"></div>

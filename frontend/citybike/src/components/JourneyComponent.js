@@ -16,7 +16,7 @@ class JourneyComponent extends React.Component {
 
             recordsPerPage: 10, 
             
-            totalPages: 0,
+            journeyCount: 0,
 
             sortBy: "id",
 
@@ -43,27 +43,27 @@ class JourneyComponent extends React.Component {
 
     componentDidMount() {
         this.fetchJourneysByPage(this.state.currentPage);
-        this.fetchTotalPages(this.state.recordsPerPage); 
+        this.fetchJourneyCount(this.state.recordsPerPage); 
     }
 
 
-    fetchTotalPages(){
+    fetchJourneyCount(){
 
 
         axios.get("http://localhost:8080/journeys/count")
         .then((response) => {
             this.setState({
-                totalPages: response.data
+                journeyCount: response.data
 
             })
         })
         .catch(function (error) {
             console.log(error.toJSON());
         })
-
-
-
     }
+
+
+
 
     fetchJourneysByPage(pageNumber, searchParameter = this.state.sortBy, order = this.state.order,
         pageSize = this.state.recordsPerPage) {
@@ -92,17 +92,25 @@ class JourneyComponent extends React.Component {
         
     }
 
+
+    getTotalPages(journeyCount = this.state.journeyCount, recordsPerPage = this.state.recordsPerPage){
+        return Math.ceil(journeyCount / recordsPerPage);
+    }
+
+
     showLastPage = () => {
         
-        if(this.state.currentPage >= this.state.totalPages){
+        const totalPages = this.getTotalPages();
+
+        if(this.state.currentPage >= totalPages){
             return;
         }
 
         this.setState({
-            currentPage: this.state.totalPages
+            currentPage: totalPages
         }) 
 
-        this.fetchJourneysByPage(this.state.totalPages)
+        this.fetchJourneysByPage(totalPages)
 
     }
 
@@ -188,7 +196,7 @@ class JourneyComponent extends React.Component {
         
         const { journeys, currentPage, recordsPerPage } = this.state;
 
-        const pages = Math.ceil(this.state.totalPages / this.state.recordsPerPage);
+        const pages = Math.ceil(this.state.journeyCount / this.state.recordsPerPage);
 
 
         const sortMap = this.state.sortParameters;
@@ -227,7 +235,6 @@ class JourneyComponent extends React.Component {
                                             <td>{journey.returnStation.stationName}</td>
                                             <td>{journey.coveredDistance} km</td>
                                             <td>{journey.duration} m</td>
-
                                         </tr>
                                     )
                                 )
@@ -235,15 +242,13 @@ class JourneyComponent extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <div className = "center-div">
-                    <table>
-                        <div style={{ float: 'left', fontFamily: 'monospace', color: '#0275d8' }}>
-                            Page {currentPage} of {pages}
+                <div className = "center-div pagination-parent">
+                        <div className = "page-number" style={{ float: 'left', fontFamily: 'monospace', color: '#0275d8' }}>
+                            <p>Page {currentPage} of {pages}</p>
                         </div>
-                        <div>
-                            <div className="clearfix"></div>
+                        <div className = "navigation-buttons-parent">
                             <nav aria-label="Page navigation example">
-                                <ul className="pagination">
+                                <ul className="pagination-list">
                                     <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
                                     <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
                                     <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === pages ? true : false} onClick={this.showNextPage}>Next</a></li>
@@ -251,11 +256,12 @@ class JourneyComponent extends React.Component {
                                 </ul>
                             </nav>
                         </div>
-                    
-                    </table>
+
                 </div>
+
                 <div className = "sorting-parent-div center-div">
-                    <div className = "sorting-main-div-child">
+
+                    <div className = "sorting-dropdown-div">
                         <select onChange={this.changeSortingParameter}>
                         <option>Sort By</option>
                         {Object.entries(sortMap).map(([key, value]) => (
@@ -264,7 +270,7 @@ class JourneyComponent extends React.Component {
                         </select>
                     </div>
 
-                    <div>
+                    <div className = "sorting-dropdown-div">
                         <select onChange={this.changeOrderingParameter}>
                         <option>Order By</option>
                         {Object.entries(orderMap).map(([key, value]) => (
@@ -273,7 +279,7 @@ class JourneyComponent extends React.Component {
                         </select>
                     </div>
                     
-                    <div>
+                    <div className = "sorting-dropdown-div">
                         <select onChange={this.changePageSizeParameter}>
                         <option>Page Size</option>
                         {pageSizes.map((size) => (
@@ -281,9 +287,12 @@ class JourneyComponent extends React.Component {
                         ))}
                         </select>
                     </div>
-                    <button onClick={() => this.fetchJourneysByPage(1)}>
-                        Sort
-                    </button>
+
+                    <div className = "sorting-dropdown-div">
+                        <button onClick={() => this.fetchJourneysByPage(1)}>
+                            Sort
+                        </button>
+                    </div>
                 </div>
             </div>
         )
