@@ -26,9 +26,7 @@ class JourneyComponent extends React.Component {
     componentDidMount() {
         this.fetchStationsByPage(this.state.currentPage);
         this.fetchTotalPages(this.state.recordsPerPage); 
-    }
-    	
-    
+    } 
 
     fetchTotalPages(recordsPerPage){
         axios.get("http://localhost:8080/stations/count")
@@ -163,13 +161,13 @@ class JourneyComponent extends React.Component {
                             Page {currentPage} of {totalPages}
                         </div>
                         <div style={{ float: 'right' }}>
-                            <div class="clearfix"></div>
+                            <div className="clearfix"></div>
                             <nav aria-label="Page navigation example">
-                                <ul class="pagination">
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showNextPage}>Next</a></li>
-                                    <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showLastPage}>Last</a></li>
+                                <ul className="pagination">
+                                    <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
+                                    <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
+                                    <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showNextPage}>Next</a></li>
+                                    <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showLastPage}>Last</a></li>
                                 </ul>
                             </nav>
                         </div>

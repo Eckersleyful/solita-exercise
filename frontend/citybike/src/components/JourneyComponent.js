@@ -269,7 +269,7 @@ class JourneyComponent extends React.Component {
                         <option>Order By</option>
                         {Object.entries(orderMap).map(([key, value]) => (
                             <option value = {value} key = {key}>{key}</option>
-                        ))}
+                        )) }
                         </select>
                     </div>
                     

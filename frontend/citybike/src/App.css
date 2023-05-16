@@ -2,13 +2,6 @@ body {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
-#table-header tr{
-  background: #1f0033;
-  color: white;
-  
-
-}
-
 h1 {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   text-decoration: underline;
@@ -16,55 +9,73 @@ h1 {
 }
 
 
+/*
+Data table header row
+*/
+#table-header tr{
+  background: #1f0033;
+  color: white;
+}
+
+/*
+Rows of the data table
+*/
 .data-table td, #table-header th{
   padding: 13px 15px 13px 15px;
 }
 
-.tabs {
-  margin-top: 1rem;
-  margin-bottom: 3rem;
-}
 
-.tab-list {
-  display: flex;
-}
-
-.tab-header-div  {
-  flex: 1;
-}
-
-.tab-header-div li {
-  list-style: none;
-  padding: 15px;
-  border-radius: 20%;
-  border: 2px solid #1f0033;
-  font-size: 1.5rem;
-  transition: transform .3s;
-}
-
-.tab-header-div li:hover {
-  transform: scale(1.1);
-  cursor: default;
-}
-
-
-
-
+/*
+Every 1nth row of the table
+*/
 .data-table tr:nth-child(1n) {
   background-color: white;
 }
 
+/*
+Every 2nd row of the table
+*/
 .data-table tr:nth-child(2n) {
   background-color: #f2f2f2;
 }
 
+/*
+Remove the gaps from table headers
+*/
 .data-table {
   border-spacing: 0px;
+}
+
+/*
+The main content area inside <Tabs> component
+*/
+
+.tabs {
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  float:left;
+  display: block;
 
 }
 
+/*
+Parent div for the tab-header-div elements
+*/
+.tab-list {
+  display: flex;
+}
 
+/*
+Parent div for the Stations and Journeys buttons.
+Flexed from left to right
+*/
+.tab-header-div  {
+  flex: 1;
+}
 
+/*
+Generic parent div for all elements we want to center
+*/
 .center-div {
 
   display: flex;
@@ -73,8 +84,33 @@ h1 {
   
 }
 
-.tabs {
-  float:left;
-  display: block;
+/*
+  The Journey and stations "buttons"
+*/
 
+.tab-header-div li {
+  list-style: none;
+  padding: 8px 15px 8px 15px;
+  border-radius: 20%;
+  border: 2px solid #1f0033;
+  font-size: 1.5rem;
+  transition: transform .3s;
 }
+
+/*
+The Journey and Station button hover 
+For some forbidden reason the transform is blurry on Chromium based browsers
+*/
+.tab-header-div li:hover {
+  transform: scale(1.032) translateZ(0);
+  -webkit-transform: scale(1.032) translateZ(0);
+  cursor: pointer;
+  filter: blur(0);
+  -webkit-filter: blur(0px);
+}
+
+
+
+
+
+
