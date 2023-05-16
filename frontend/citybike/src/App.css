@@ -1,8 +1,11 @@
+body {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
 #table-header tr{
   background: #1f0033;
   color: white;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-
+  
 
 }
 
@@ -14,10 +17,13 @@ h1 {
 
 
 .data-table td, #table-header th{
-  padding: 12px 15px 12px 15px;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  padding: 13px 15px 13px 15px;
 }
 
+.tabs {
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+}
 
 .tab-list {
   display: flex;
@@ -32,7 +38,6 @@ h1 {
   padding: 15px;
   border-radius: 20%;
   border: 2px solid #1f0033;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-size: 1.5rem;
   transition: transform .3s;
 }

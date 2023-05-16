@@ -14,7 +14,7 @@ class JourneyComponent extends React.Component {
 
             currentPage: 1,
 
-            recordsPerPage: 15, 
+            recordsPerPage: 10, 
             
             totalPages: 0,
 
@@ -47,13 +47,13 @@ class JourneyComponent extends React.Component {
     }
 
 
-    fetchTotalPages(recordsPerPage){
+    fetchTotalPages(){
 
 
         axios.get("http://localhost:8080/journeys/count")
         .then((response) => {
             this.setState({
-                totalPages: Math.ceil(response.data / recordsPerPage)
+                totalPages: response.data
 
             })
         })
@@ -89,8 +89,7 @@ class JourneyComponent extends React.Component {
         .catch(function (error) {
             console.log(error);
         })
-
-
+        
     }
 
     showLastPage = () => {
@@ -187,8 +186,11 @@ class JourneyComponent extends React.Component {
 
     render() {
         
-        const { journeys, currentPage, recordsPerPage, totalPages } = this.state;
-        
+        const { journeys, currentPage, recordsPerPage } = this.state;
+
+        const pages = Math.ceil(this.state.totalPages / this.state.recordsPerPage);
+
+
         const sortMap = this.state.sortParameters;
         const orderMap = this.state.orderParameters;
         const pageSizes = this.state.pageSizeParameters;
@@ -236,7 +238,7 @@ class JourneyComponent extends React.Component {
                 <div className = "center-div">
                     <table>
                         <div style={{ float: 'left', fontFamily: 'monospace', color: '#0275d8' }}>
-                            Page {currentPage} of {totalPages}
+                            Page {currentPage} of {pages}
                         </div>
                         <div>
                             <div className="clearfix"></div>
@@ -244,20 +246,20 @@ class JourneyComponent extends React.Component {
                                 <ul className="pagination">
                                     <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
                                     <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
-                                    <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showNextPage}>Next</a></li>
-                                    <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showLastPage}>Last</a></li>
+                                    <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === pages ? true : false} onClick={this.showNextPage}>Next</a></li>
+                                    <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === pages ? true : false} onClick={this.showLastPage}>Last</a></li>
                                 </ul>
                             </nav>
                         </div>
                     
                     </table>
                 </div>
-                <div className = "sorting-main-div center-div">
+                <div className = "sorting-parent-div center-div">
                     <div className = "sorting-main-div-child">
                         <select onChange={this.changeSortingParameter}>
                         <option>Sort By</option>
                         {Object.entries(sortMap).map(([key, value]) => (
-                            <option value = {value}>{key}</option>
+                            <option value = {value} key = {key}>{key}</option>
                         ))}
                         </select>
                     </div>
@@ -266,7 +268,7 @@ class JourneyComponent extends React.Component {
                         <select onChange={this.changeOrderingParameter}>
                         <option>Order By</option>
                         {Object.entries(orderMap).map(([key, value]) => (
-                            <option value = {value}>{key}</option>
+                            <option value = {value} key = {key}>{key}</option>
                         ))}
                         </select>
                     </div>
