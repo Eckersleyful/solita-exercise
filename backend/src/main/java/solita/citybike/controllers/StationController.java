@@ -46,11 +46,6 @@ public class StationController {
 
     }
 
-    @GetMapping("/departing/count")
-    public ResponseEntity<Integer> departingStationsCount(@RequestParam Integer stationId){
-        return new ResponseEntity<>(this.stationService.getDepartingStationCountByStationId(stationId), new HttpHeaders(), HttpStatus.OK);
-
-    }
 
 
 }

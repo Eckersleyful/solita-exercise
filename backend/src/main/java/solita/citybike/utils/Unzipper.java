@@ -105,12 +105,6 @@ public class Unzipper {
 
         } catch (IOException e) {
             Logger.error(e);
-        } finally {
-            try {
-                sevenZFile.close();
-            } catch (IOException e) {
-                Logger.error(e);
-            }
         }
         return new String[0];
     }

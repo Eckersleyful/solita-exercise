@@ -28,4 +28,8 @@ public interface StationRepository extends PagingAndSortingRepository<BikeStatio
 
     @Query(value = "SELECT COUNT(j.id) FROM journeys j JOIN stations s ON j.departure_station_id = s.id WHERE s.station_id = :id", nativeQuery = true)
     Integer getDepartingStationCountByStationId(Integer id);
+
+    @Query(value = "SELECT COUNT(j.id) FROM journeys j JOIN stations s ON j.return_station_id = s.id WHERE s.station_id = :id", nativeQuery = true)
+    Integer getReturningStationCountByStationId(Integer id);
+
 }

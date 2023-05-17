@@ -35,6 +35,9 @@ public class StationService {
             return new ArrayList<>();
         }
 
+        for(BikeStation b : pagedResult){
+            this.addJourneyCounts(b);
+        }
         return pagedResult.getContent();
 
     }
@@ -44,9 +47,14 @@ public class StationService {
         return this.stationRepository.getStationCount();
     }
 
-    public Integer getDepartingStationCountByStationId(Integer id){
+    private void addJourneyCounts(BikeStation station){
 
-        return this.stationRepository.getDepartingStationCountByStationId(id);
+        int departingJourneys = this.stationRepository.getDepartingStationCountByStationId(station.getStationId());
+        station.setDepartingJourneysCount(departingJourneys);
+
+        int returningJourneys = this.stationRepository.getReturningStationCountByStationId(station.getStationId());
+        station.setReturningJourneysCount(returningJourneys);
+
     }
 
 

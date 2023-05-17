@@ -71,8 +71,6 @@ public class JourneyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[2].duration", is(60)));
-
-
     }
 
 }

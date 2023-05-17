@@ -1,6 +1,7 @@
 package solita.citybike.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,6 @@ public class BikeStation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private Integer id;
 
     @Column(name = "station_id")
@@ -23,6 +23,29 @@ public class BikeStation {
     @Column(name = "station_name")
     @NotBlank(message = "Station name is needed")
     private String stationName;
+
+    @JsonProperty
+    private int departingJourneysCount;
+
+    @JsonProperty
+    private int returningJourneysCount;
+
+    public int getDepartingJourneysCount() {
+        return departingJourneysCount;
+    }
+
+    public void setDepartingJourneysCount(int departingJourneysCount) {
+        this.departingJourneysCount = departingJourneysCount;
+    }
+
+    public int getReturningJourneysCount() {
+        return returningJourneysCount;
+    }
+
+    public void setReturningJourneysCount(int returningJourneysCount) {
+        this.returningJourneysCount = returningJourneysCount;
+    }
+
 
     public Integer getId() {
         return id;
