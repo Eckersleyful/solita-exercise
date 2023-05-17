@@ -1,6 +1,6 @@
-import axios from 'axios';
+import { fetchStationCount, fetchStationsByPage } from '../services/stationServices';
 import React from 'react';
-import { STATION_URL }  from '../constants/URLS';
+
 
 class StationComponent extends React.Component {
 
@@ -12,23 +12,30 @@ class StationComponent extends React.Component {
         this.state = {
 
             stations: [],
-
-            currentPage: 1,
-
-            recordsPerPage: 30,
             
+            //Current pagination page
+            pageNumber: 1,
+            
+            //How many rows we show at a time
+            pageSize: 30,
+            
+            //How many stations there are in total in the DB
             stationCount: 0,
-
-            sortBy: "id"
-
         }
+
+        this.showNextPage = this.showNextPage.bind(this);
+        this.showPreviousPage = this.showPreviousPage.bind(this);
+        this.showLastPage = this.showLastPage.bind(this);
+        this.showFirstPage = this.showFirstPage.bind(this);
     }
 
     async componentDidMount() {
 
+
+        //Fetch initial data and set it as state
         var [stationCount, stations] = await Promise.all([
-            this.fetchStationCount(),
-            this.fetchStationsByPage()
+            fetchStationCount(),
+            fetchStationsByPage(this.state.pageNumber, this.state.pageSize)
         ])
 
         this.setState({
@@ -37,112 +44,88 @@ class StationComponent extends React.Component {
 
         })
     } 
-
-    async fetchStationCount(){
-
-        return axios.get(STATION_URL + "/count")
-        .catch(function(error){
-            console.log(error);
-        })
-
-    }
-
-    async fetchStationDepartingCount(stationId){
-
-        return axios.get(STATION_URL + "/departing/count?stationId=" +stationId)
-        .catch(function(error){
-            console.log(error);
-        })
-
-    }
-
-    async fetchStationsByPage(pageNumber = this.state.currentPage) {
-
-        pageNumber -= 1
-
-        return axios.get(STATION_URL + "?pageNumber=" + pageNumber
-            + "&pageSize=" + this.state.recordsPerPage)
-            .catch(function(error) {
-                console.log(error)
-            })
-
-    }
-
-
-    getTotalPages(stationCount = this.state.stationCount, recordsPerPage = this.state.recordsPerPage){
+    
+    getTotalPages(stationCount = this.state.stationCount, recordsPerPage = this.state.pageSize){
         return Math.ceil(stationCount / recordsPerPage);
     }
 
-    showLastPage = () => {
+    async showLastPage() {
         
         const totalPages = this.getTotalPages();
 
-        if(this.state.currentPage >= totalPages){
+        if(this.state.pageNumber >= totalPages){
             return;
         }
 
         this.setState({
-            currentPage: totalPages
+            pageNumber: totalPages
         }) 
+        this.setStationData(totalPages, this.state.pageSize, this);
 
-        this.fetchStationsByPage(totalPages);
 
     }
 
-    showFirstPage = () => {
+    async showFirstPage() {
         
         let firstPage = 1;
 
-        if(this.state.currentPage < firstPage){
+        if(this.state.pageNumber < firstPage){
             return
         }
             
         this.setState({
-            currentPage: firstPage
+            pageNumber: firstPage
         })
 
-        this.fetchStationsByPage(firstPage)
+        this.setStationData(firstPage, this.state.pageSize, this);
+
 
     }
 
-    showNextPage = () => {
-        
-        if(this.state.currentPage >= this.state.totalPages){
+    async showNextPage() {
+
+        console.log(this)
+
+        if(this.state.pageNumber >= this.getTotalPages()){
+            console.log("here")
             return;
         }
 
-        const newPage = this.state.currentPage + 1;
+        const newPage = this.state.pageNumber + 1;
 
         this.setState({
-            currentPage: newPage
+            pageNumber: newPage
         })
 
-        this.fetchStationsByPage(newPage);
-
+        this.setStationData(newPage, this.state.pageSize, this);
     }
 
 
-    showPreviousPage = () => {
+    async showPreviousPage() {
         
-
-
-        if(this.state.currentPage <= 1){
+        if(this.state.pageNumber <= 1){
             return;
         }
 
-        const newPage = this.state.currentPage - 1;
+        const newPage = this.state.pageNumber - 1;
 
         this.setState({
-            currentPage: newPage
+            pageNumber: newPage
         })
 
-        this.fetchStationsByPage(newPage);
-
+        this.setStationData(newPage, this.state.pageSize, this);
     }
 
+    async setStationData(page, pageSize, state){
+        const stations = await fetchStationsByPage(page, pageSize);
+
+        state.setState({
+            stations: stations.data
+        })
+    }
 
     render() {
-        const { stations, currentPage, recordsPerPage} = this.state;
+        const { stations, pageNumber: currentPage, pageSize: recordsPerPage} = this.state;
 
         const totalPages = this.getTotalPages();
         return (

@@ -8,7 +8,16 @@ h1 {
   text-underline-offset: 0.5rem;
 }
 
+/*
+Prevent text highlighting of links so clicking
+navigation buttons is less awkward
+*/
 
+li {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 /*
 Data table header row
 */

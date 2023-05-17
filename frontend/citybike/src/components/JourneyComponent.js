@@ -12,10 +12,12 @@ class JourneyComponent extends React.Component {
         this.state = {
 
             journeys: [],
-
+            
+            //Current page the user is on
             currentPage: 1,
 
-            recordsPerPage: 10, 
+
+            pageSize: 10, 
             
             journeyCount: 0,
 
@@ -44,7 +46,7 @@ class JourneyComponent extends React.Component {
 
     componentDidMount() {
         this.fetchJourneysByPage(this.state.currentPage);
-        this.fetchJourneyCount(this.state.recordsPerPage); 
+        this.fetchJourneyCount(this.state.pageSize); 
     }
 
 
@@ -67,24 +69,20 @@ class JourneyComponent extends React.Component {
 
 
     fetchJourneysByPage(pageNumber, searchParameter = this.state.sortBy, order = this.state.order,
-        pageSize = this.state.recordsPerPage) {
+        pageSize = this.state.pageSize) {
 
         pageNumber -= 1
 
 
         axios.get(JOURNEY_URL + "?pageNumber=" + pageNumber
         + "&pageSize=" + pageSize + "&sortBy=" + searchParameter + "&order=" + order)
+
         .then((response) => {
-
-            for(let x in response.data){
-                response.data[x].coveredDistance = Math.ceil(response.data[x].coveredDistance / 1000);
-                response.data[x].duration = Math.ceil(response.data[x].duration / 60); 
-            }
-
             this.setState({
                 journeys: response.data
             })
         })
+
         .catch(function (error) {
             console.log(error);
         })
@@ -92,7 +90,7 @@ class JourneyComponent extends React.Component {
     }
 
 
-    getTotalPages(journeyCount = this.state.journeyCount, recordsPerPage = this.state.recordsPerPage){
+    getTotalPages(journeyCount = this.state.journeyCount, recordsPerPage = this.state.pageSize){
         return Math.ceil(journeyCount / recordsPerPage);
     }
 
@@ -193,9 +191,9 @@ class JourneyComponent extends React.Component {
 
     render() {
         
-        const { journeys, currentPage, recordsPerPage } = this.state;
+        const { journeys, currentPage, pageSize: recordsPerPage } = this.state;
 
-        const pages = Math.ceil(this.state.journeyCount / this.state.recordsPerPage);
+        const pages = Math.ceil(this.state.journeyCount / this.state.pageSize);
 
 
         const sortMap = this.state.sortParameters;
@@ -232,8 +230,8 @@ class JourneyComponent extends React.Component {
                                             <td key = {journey.id + "td-3"}>{journey.returnDate.split("T")[0]}<br></br>Klo {journey.returnDate.split("T")[1]}</td>
                                             <td key = {journey.id + "td-4"}>{journey.departureStation.stationName}</td>
                                             <td key = {journey.id + "td-5"}>{journey.returnStation.stationName}</td>
-                                            <td key = {journey.id + "td-6"}>{journey.coveredDistance} km</td>
-                                            <td key = {journey.id + "td-7"}>{journey.duration} m</td>
+                                            <td key = {journey.id + "td-6"}>{(journey.coveredDistance / 1000).toFixed(1)} km</td>
+                                            <td key = {journey.id + "td-7"}>{Math.floor(journey.duration / 60)} mins</td>
                                         </tr>
                                     )
                                 )
