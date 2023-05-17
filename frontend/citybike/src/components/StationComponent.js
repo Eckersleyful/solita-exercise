@@ -44,11 +44,16 @@ class StationComponent extends React.Component {
 
         })
     } 
-    
+
     getTotalPages(stationCount = this.state.stationCount, recordsPerPage = this.state.pageSize){
         return Math.ceil(stationCount / recordsPerPage);
     }
 
+    /**
+     * Changes the pagination to the last page
+     * 
+     * @returns Returns early if we already are at last page
+     */
     async showLastPage() {
         
         const totalPages = this.getTotalPages();
@@ -65,6 +70,10 @@ class StationComponent extends React.Component {
 
     }
 
+    /**
+     * Changes the pagination to the first page
+     * @returns Returns early if we already are at first page
+     */
     async showFirstPage() {
         
         let firstPage = 1;
@@ -81,6 +90,11 @@ class StationComponent extends React.Component {
 
 
     }
+
+    /**
+     * Changes the pagination to the next page
+     * @returns Returns early if we already are at last page
+     */
 
     async showNextPage() {
 
@@ -100,6 +114,10 @@ class StationComponent extends React.Component {
         this.setStationData(newPage, this.state.pageSize, this);
     }
 
+    /**
+     * Changes pagination to the previous page
+     * @returns Returns early if we already are at first page
+     */
 
     async showPreviousPage() {
         
@@ -128,6 +146,7 @@ class StationComponent extends React.Component {
         const { stations, pageNumber: currentPage, pageSize: recordsPerPage} = this.state;
 
         const totalPages = this.getTotalPages();
+
         return (
             <div className = "main-div">
 

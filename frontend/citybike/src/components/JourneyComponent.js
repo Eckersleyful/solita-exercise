@@ -14,17 +14,21 @@ class JourneyComponent extends React.Component {
             journeys: [],
             
             //Current page the user is on
-            currentPage: 1,
+            pageNumber: 1,
 
-
+            //How many journeys we show on the table
             pageSize: 10, 
             
+            //How many journeys there are in the DB
             journeyCount: 0,
 
+            //Default sorting
             sortBy: "id",
-
+            
+            //Default ordering
             order: "asc",
-
+            
+            //Mapping all available sorting parameters
             sortParameters : {
                 'Departure time': "departureDate",
                 'Return time': "returnDate",
@@ -34,21 +38,29 @@ class JourneyComponent extends React.Component {
                 'Duration': 'duration'
             },
 
+            //Mapping ordering params
             orderParameters : {
                 'Ascending': 'asc',
                 'Descending': 'desc'
             },
-
+            
+            //Available page sizes
             pageSizeParameters : [5, 10, 15, 25, 50, 100]
 
         }
     }
 
     componentDidMount() {
-        this.fetchJourneysByPage(this.state.currentPage);
+
+        //Fetch initial data
+        this.fetchJourneysByPage(this.state.pageNumber);
         this.fetchJourneyCount(this.state.pageSize); 
     }
 
+
+    /*
+    * Fetches how many journeys there are in the DB
+    */
 
     fetchJourneyCount(){
 
@@ -67,6 +79,14 @@ class JourneyComponent extends React.Component {
 
 
 
+    /**
+     * Fetches journeys with sorting and ordering params.
+     * 
+     * @param {int} pageNumber   - The page number you want to fetch
+     * @param {string} sortBy    - The param you want to sort on
+     * @param {string} orderBy   - The param you want to order based on (asc/desc)
+     * @param {int} pageSize     - How many records you want on the table
+     */
 
     fetchJourneysByPage(pageNumber, searchParameter = this.state.sortBy, order = this.state.order,
         pageSize = this.state.pageSize) {
@@ -89,17 +109,28 @@ class JourneyComponent extends React.Component {
         
     }
 
-
-    getTotalPages(journeyCount = this.state.journeyCount, recordsPerPage = this.state.pageSize){
-        return Math.ceil(journeyCount / recordsPerPage);
+    /**
+     * Calculates how many pages there will be
+     * with the given amount of journeys and page size
+     * 
+     * @param {int} journeyCount    - Amount of journeys, defaults to this.state.journeyCount
+     * @param {int} recordsPerPage  - Page size, defautls to this.state.pageSize
+     * @returns {int}               - Rounded up division of the params
+     */
+    getTotalPages(journeyCount = this.state.journeyCount, pageSize = this.state.pageSize){
+        return Math.ceil(journeyCount / pageSize);
     }
 
-
+    /**
+     * Changes the pagination to the last page
+     * 
+     * @returns Returns early if we already are at last page
+     */
     showLastPage = () => {
         
         const totalPages = this.getTotalPages();
 
-        if(this.state.currentPage >= totalPages){
+        if(this.state.pageNumber >= totalPages){
             return;
         }
 
@@ -111,11 +142,15 @@ class JourneyComponent extends React.Component {
 
     }
 
+    /**
+     * Changes the pagination to the first page
+     * @returns Returns early if we already are at first page
+     */
     showFirstPage = () => {
         
         let firstPage = 1;
 
-        if(this.state.currentPage < firstPage){
+        if(this.state.pageNumber < firstPage){
             return
         }
             
@@ -127,13 +162,18 @@ class JourneyComponent extends React.Component {
 
     }
 
+
+    /**
+     * Changes the pagination to the next page
+     * @returns Returns early if we already are at last page
+     */
     showNextPage = () => {
         
-        if(this.state.currentPage >= this.state.totalPages){
+        if(this.state.pageNumber >= this.state.totalPages){
             return;
         }
 
-        const newPage = this.state.currentPage + 1;
+        const newPage = this.state.pageNumber + 1;
 
         this.setState({
             currentPage: newPage
@@ -143,15 +183,17 @@ class JourneyComponent extends React.Component {
 
     }
 
-
-
+    /**
+     * Changes pagination to the previous page
+     * @returns Returns early if we already are at first page
+     */
     showPreviousPage = () => {
 
-        if(this.state.currentPage <= 1){
+        if(this.state.pageNumber <= 1){
             return;
         }
 
-        const newPage = this.state.currentPage - 1;
+        const newPage = this.state.pageNumber - 1;
 
         this.setState({
             currentPage: newPage
@@ -161,6 +203,11 @@ class JourneyComponent extends React.Component {
 
     }
 
+    /**
+     * The function fired by 
+     * the Sort By <option> element with id sortby-select
+     * @param {onClick event} event -Passed by onChange of the <option>
+     */
     changeSortingParameter = (event) => {
         const parameter = event.target.value
         this.setState({
@@ -169,6 +216,11 @@ class JourneyComponent extends React.Component {
 
     }
 
+    /**
+     * The function fired by 
+     * the Order By <option> element with id orderby-select
+     * @param {onClick event} event -Passed by onChange of the <option>
+     */
     changeOrderingParameter = (event) => {
         
         const newOrder = event.target.value
@@ -178,6 +230,11 @@ class JourneyComponent extends React.Component {
         })
     }
 
+    /**
+     * The function fired by 
+     * the Page size <option> element with id page-size-select
+     * @param {onClick event} event -Passed by onChange of the <option>
+     */
     changePageSizeParameter = (event) => {
         
         const size = event.target.value
@@ -191,9 +248,11 @@ class JourneyComponent extends React.Component {
 
     render() {
         
-        const { journeys, currentPage, pageSize: recordsPerPage } = this.state;
 
-        const pages = Math.ceil(this.state.journeyCount / this.state.pageSize);
+    
+        const { journeys, pageNumber: currentPage, pageSize: recordsPerPage } = this.state;
+
+        const pages = this.state.getTotalPages();
 
 
         const sortMap = this.state.sortParameters;
@@ -258,7 +317,7 @@ class JourneyComponent extends React.Component {
 
                 <div className = "sorting-parent-div center-div">
 
-                    <div className = "sorting-dropdown-div">
+                    <div id = "sortby-select" className = "sorting-dropdown-div">
                         <select onChange={this.changeSortingParameter}>
                         <option>Sort By</option>
                         {Object.entries(sortMap).map(([key, value]) => (
@@ -267,7 +326,7 @@ class JourneyComponent extends React.Component {
                         </select>
                     </div>
 
-                    <div className = "sorting-dropdown-div">
+                    <div id = "orderby-select" className = "sorting-dropdown-div">
                         <select onChange={this.changeOrderingParameter}>
                         <option>Order By</option>
                         {Object.entries(orderMap).map(([key, value]) => (
@@ -276,7 +335,7 @@ class JourneyComponent extends React.Component {
                         </select>
                     </div>
                     
-                    <div className = "sorting-dropdown-div">
+                    <div id = "pagesize-select" className = "sorting-dropdown-div">
                         <select onChange={this.changePageSizeParameter}>
                         <option>Page Size</option>
                         {pageSizes.map((size) => (
