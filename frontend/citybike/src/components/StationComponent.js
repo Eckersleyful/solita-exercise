@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React from 'react';
+import { STATION_URL }  from '../constants/URLS';
 
-class JourneyComponent extends React.Component {
+class StationComponent extends React.Component {
 
 
     constructor(props) {
@@ -16,61 +17,75 @@ class JourneyComponent extends React.Component {
 
             recordsPerPage: 30,
             
-            totalPages: 0,
+            stationCount: 0,
 
             sortBy: "id"
 
         }
     }
 
-    componentDidMount() {
-        this.fetchStationsByPage(this.state.currentPage);
-        this.fetchTotalPages(this.state.recordsPerPage); 
+    async componentDidMount() {
+
+        var [stationCount, stations] = await Promise.all([
+            this.fetchStationCount(),
+            this.fetchStationsByPage()
+        ])
+
+        this.setState({
+            stations: stations.data,
+            stationCount: stationCount.data
+
+        })
     } 
 
-    fetchTotalPages(recordsPerPage){
-        axios.get("http://localhost:8080/stations/count")
-        .then(response => response.data).then((data) => {
-            this.setState({
-                totalPages: Math.ceil(data / recordsPerPage)
+    async fetchStationCount(){
 
-            })
+        return axios.get(STATION_URL + "/count")
+        .catch(function(error){
+            console.log(error);
         })
-        .catch(function(error) {
-            console.log(error)
-        })
+
     }
 
-    fetchStationsByPage(pageNumber) {
+    async fetchStationDepartingCount(stationId){
 
+        return axios.get(STATION_URL + "/departing/count?stationId=" +stationId)
+        .catch(function(error){
+            console.log(error);
+        })
+
+    }
+
+    async fetchStationsByPage(pageNumber = this.state.currentPage) {
 
         pageNumber -= 1
 
-        axios.get("http://localhost:8080/stations?pageNumber=" + pageNumber
+        return axios.get(STATION_URL + "?pageNumber=" + pageNumber
             + "&pageSize=" + this.state.recordsPerPage)
-            .then(response => response.data).then((data) => {
-                this.setState({
-                    stations: data
-
-                })
-
-            })
             .catch(function(error) {
                 console.log(error)
             })
 
     }
+
+
+    getTotalPages(stationCount = this.state.stationCount, recordsPerPage = this.state.recordsPerPage){
+        return Math.ceil(stationCount / recordsPerPage);
+    }
+
     showLastPage = () => {
         
-        if(this.state.currentPage >= this.state.totalPages){
+        const totalPages = this.getTotalPages();
+
+        if(this.state.currentPage >= totalPages){
             return;
         }
 
         this.setState({
-            currentPage: this.state.totalPages
+            currentPage: totalPages
         }) 
 
-        this.fetchStationsByPage(this.state.totalPages)
+        this.fetchStationsByPage(totalPages);
 
     }
 
@@ -127,59 +142,63 @@ class JourneyComponent extends React.Component {
 
 
     render() {
-        const { stations, currentPage, recordsPerPage, totalPages } = this.state;
+        const { stations, currentPage, recordsPerPage} = this.state;
 
+        const totalPages = this.getTotalPages();
         return (
-            <div>
+            <div className = "main-div">
 
-                <h1 className="text-center mt-5 ">All bike journeys</h1>
-                <div className="container mt-2">
-                    <table className="table table-bordered border-info shadow">
-                        <thead>
+                <div className = "center-div">
+                    <h1>Helsinki Citybike journeys</h1>
+                </div>
+                
+                <div className = "data-table-wrapper center-div">
+                    <table className = "data-table">
+                        <thead id = "table-header">
                             <tr>
                                 <th>Index</th>
                                 <th>Station name</th>
+                                <th>Departure count</th>
+                                <th>Return count</th>
                             </tr>
                         </thead>
                         <tbody>
                             {stations.length === 0 ?
-                                <tr align="center"><td colSpan="5">No stations found</td></tr> :
+                                <tr>
+                                    <td>No stations found</td>
+                                </tr> :
                                 stations.map(
                                     (station, index) => (
-
-                                        <tr key={station.id}>
+                                        <tr key = {station.id + "meow"}>
                                             <td>{(recordsPerPage * (currentPage - 1)) + index + 1}</td>
                                             <td>{station.stationName}</td>
+                                            <td>{station.departingJourneysCount}</td>
+                                            <td>{station.returningJourneysCount}</td>
                                         </tr>
                                     )
                                 )
                             }
                         </tbody>
                     </table>
-                    <table className="table">
-                        <div style={{ float: 'left', fontFamily: 'monospace', color: '#0275d8' }}>
-                            <p>Page {currentPage} of {totalPages}</p> 
-                        </div>
-                        <div style={{ float: 'right' }}>
-                            <div className="clearfix"></div>
-                            <nav aria-label="Page navigation example">
-                                <ul className="pagination">
-                                    <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
-                                    <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
-                                    <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showNextPage}>Next</a></li>
-                                    <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showLastPage}>Last</a></li>
-                                </ul>
-                            </nav>
-                        </div>
-                        
-
-
-
-                    </table>
+                </div>
+                <div className = "center-div pagination-parent">
+                    <div style={{ float: 'left', fontFamily: 'monospace', color: '#0275d8' }}>
+                        <p>Page {currentPage} of {totalPages}</p> 
+                    </div>
+                    <div id = "station-navigation-parent" className = "navigation-buttons-parent">
+                        <nav aria-label="Page navigation">
+                            <ul className="pagination-list">
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showNextPage}>Next</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={this.showLastPage}>Last</a></li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         )
     }
 }
 
-export default JourneyComponent;
+export default StationComponent;

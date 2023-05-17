@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React from 'react';
+import { JOURNEY_URL} from '../constants/URLS';
 
 class JourneyComponent extends React.Component {
 
@@ -50,7 +51,7 @@ class JourneyComponent extends React.Component {
     fetchJourneyCount(){
 
 
-        axios.get("http://localhost:8080/journeys/count")
+        axios.get(JOURNEY_URL + "/count")
         .then((response) => {
             this.setState({
                 journeyCount: response.data
@@ -70,10 +71,8 @@ class JourneyComponent extends React.Component {
 
         pageNumber -= 1
 
-        console.log(searchParameter)
-        console.log(order)
 
-        axios.get("http://localhost:8080/journeys?pageNumber=" + pageNumber
+        axios.get(JOURNEY_URL + "?pageNumber=" + pageNumber
         + "&pageSize=" + pageSize + "&sortBy=" + searchParameter + "&order=" + order)
         .then((response) => {
 
@@ -227,14 +226,14 @@ class JourneyComponent extends React.Component {
                                 <tr><td>No journeys found</td></tr> :
                                 journeys.map(
                                     (journey, index) => (
-                                        <tr key={journey.id}>
-                                            <td>{(recordsPerPage * (currentPage - 1)) + index + 1}</td>
-                                            <td>{journey.departureDate.split("T")[0]}<br></br>Klo {journey.departureDate.split("T")[1]}</td>
-                                            <td>{journey.returnDate.split("T")[0]}<br></br>Klo {journey.returnDate.split("T")[1]}</td>
-                                            <td>{journey.departureStation.stationName}</td>
-                                            <td>{journey.returnStation.stationName}</td>
-                                            <td>{journey.coveredDistance} km</td>
-                                            <td>{journey.duration} m</td>
+                                        <tr key= {journey.id}>
+                                            <td key = {journey.id + "td-1"}>{(recordsPerPage * (currentPage - 1)) + index + 1}</td>
+                                            <td key = {journey.id + "td-2"}>{journey.departureDate.split("T")[0]}<br></br>Klo {journey.departureDate.split("T")[1]}</td>
+                                            <td key = {journey.id + "td-3"}>{journey.returnDate.split("T")[0]}<br></br>Klo {journey.returnDate.split("T")[1]}</td>
+                                            <td key = {journey.id + "td-4"}>{journey.departureStation.stationName}</td>
+                                            <td key = {journey.id + "td-5"}>{journey.returnStation.stationName}</td>
+                                            <td key = {journey.id + "td-6"}>{journey.coveredDistance} km</td>
+                                            <td key = {journey.id + "td-7"}>{journey.duration} m</td>
                                         </tr>
                                     )
                                 )
@@ -247,7 +246,7 @@ class JourneyComponent extends React.Component {
                             <p>Page {currentPage} of {pages}</p>
                         </div>
                         <div className = "navigation-buttons-parent">
-                            <nav aria-label="Page navigation example">
+                            <nav aria-label="Page navigation">
                                 <ul className="pagination-list">
                                     <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showPreviousPage}>Previous</a></li>
                                     <li className="page-item page-nav"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={this.showFirstPage}>First</a></li>

@@ -67,6 +67,11 @@ Parent div for the tab-header-div elements
   display: flex;
 }
 
+.tab-list-active {
+  background-color: lightsteelblue;
+}
+
+
 /*
 Parent div for the Stations and Journeys buttons.
 Flexed from left to right
@@ -120,6 +125,10 @@ For some forbidden reason the transform is blurry on Chromium based browsers
 
 .pagination-parent .navigation-buttons-parent {
   margin-left: 31%;
+}
+
+#station-navigation-parent {
+  margin-left: 25%;
 }
 
 .pagination-parent .pagination-list li{
