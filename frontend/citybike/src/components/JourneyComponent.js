@@ -88,14 +88,13 @@ class JourneyComponent extends React.Component {
      * @param {int} pageSize     - How many records you want on the table
      */
 
-    fetchJourneysByPage(pageNumber, searchParameter = this.state.sortBy, order = this.state.order,
+    fetchJourneysByPage(pageNumber, sortBy = this.state.sortBy, order = this.state.order,
         pageSize = this.state.pageSize) {
 
         pageNumber -= 1
 
-
         axios.get(JOURNEY_URL + "?pageNumber=" + pageNumber
-        + "&pageSize=" + pageSize + "&sortBy=" + searchParameter + "&order=" + order)
+        + "&pageSize=" + pageSize + "&sortBy=" + sortBy + "&order=" + order)
 
         .then((response) => {
             this.setState({
@@ -135,7 +134,7 @@ class JourneyComponent extends React.Component {
         }
 
         this.setState({
-            currentPage: totalPages
+            pageNumber: totalPages
         }) 
 
         this.fetchJourneysByPage(totalPages)
@@ -155,7 +154,7 @@ class JourneyComponent extends React.Component {
         }
             
         this.setState({
-            currentPage: firstPage
+            pageNumber: firstPage
         })
 
         this.fetchJourneysByPage(firstPage)
@@ -169,14 +168,15 @@ class JourneyComponent extends React.Component {
      */
     showNextPage = () => {
         
-        if(this.state.pageNumber >= this.state.totalPages){
+        if(this.state.pageNumber >= this.getTotalPages()){
+            console.log("hmm")
             return;
         }
 
         const newPage = this.state.pageNumber + 1;
 
         this.setState({
-            currentPage: newPage
+            pageNumber: newPage
         })
 
         this.fetchJourneysByPage(newPage);
@@ -196,7 +196,7 @@ class JourneyComponent extends React.Component {
         const newPage = this.state.pageNumber - 1;
 
         this.setState({
-            currentPage: newPage
+            pageNumber: newPage
         })
 
         this.fetchJourneysByPage(newPage);
@@ -240,7 +240,7 @@ class JourneyComponent extends React.Component {
         const size = event.target.value
 
         this.setState({
-            recordsPerPage: size
+            pageSize: size
         })
     }
 
@@ -252,7 +252,7 @@ class JourneyComponent extends React.Component {
     
         const { journeys, pageNumber: currentPage, pageSize: recordsPerPage } = this.state;
 
-        const pages = this.state.getTotalPages();
+        const pages = this.getTotalPages();
 
 
         const sortMap = this.state.sortParameters;
@@ -289,8 +289,8 @@ class JourneyComponent extends React.Component {
                                             <td key = {journey.id + "td-3"}>{journey.returnDate.split("T")[0]}<br></br>Klo {journey.returnDate.split("T")[1]}</td>
                                             <td key = {journey.id + "td-4"}>{journey.departureStation.stationName}</td>
                                             <td key = {journey.id + "td-5"}>{journey.returnStation.stationName}</td>
-                                            <td key = {journey.id + "td-6"}>{(journey.coveredDistance / 1000).toFixed(1)} km</td>
-                                            <td key = {journey.id + "td-7"}>{Math.floor(journey.duration / 60)} mins</td>
+                                            <td key = {journey.id + "td-6"}>{(journey.coveredDistance / 1000).toFixed(2)} km</td>
+                                            <td key = {journey.id + "td-7"}>{Math.ceil(journey.duration / 60)} mins</td>
                                         </tr>
                                     )
                                 )
