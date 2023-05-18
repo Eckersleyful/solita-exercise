@@ -30,7 +30,7 @@ target/
 
 target/*
 
-
+dependency-tree.txt
 
 
 packages/react-devtools-core/dist
