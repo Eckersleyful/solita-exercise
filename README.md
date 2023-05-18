@@ -16,7 +16,7 @@ Maven
 
 NPM 
 
-#About MySQL
+# About MySQL
 
 If you are running the default installation of MySQL you should know that the default
 values for memory usage parameters are very conservative. 
@@ -45,7 +45,7 @@ sort_buffer_size=256K
 NOTE: These are for 16GB RAM system, double/halve according to your own system specs or try even
 greedier parameters.
 
-#Backend
+# Backend
 
 1: 
 
@@ -82,7 +82,7 @@ greedier parameters.
   I have benchmarked it to run just under 10 minutes.
 
 
-#Frontend
+# Frontend
 
 1:
 
