@@ -18,6 +18,10 @@ public class Unzipper {
 
     private static final String ZIP_LOCATION = "csv/*";
 
+    private Unzipper() {
+
+    }
+
     /**
      * Returns a list of files found at the constant of ZIP_LOCATION.
      * In case of wanting to scan a different directory, a wildcard has to be present
@@ -28,7 +32,7 @@ public class Unzipper {
      * in case of failing the lookup
      */
 
-    private Resource[] getAllCsvZips(){
+    private static Resource[] getAllCsvZips(){
 
         PathMatchingResourcePatternResolver pattern = new PathMatchingResourcePatternResolver();
 
@@ -51,7 +55,7 @@ public class Unzipper {
      * @return
      */
 
-    public ArrayList<String[]> getJourneysFromCsv(){
+    public static ArrayList<String[]> getJourneysFromCsv(){
 
         Resource[] zipsInDir = getAllCsvZips();
         Logger.info("Found " + zipsInDir.length + " files in the target directory");
@@ -77,7 +81,7 @@ public class Unzipper {
      * @param f The file to be unzipped and read
      * @return An array of strings, if reading fails, an empty array of strings.
      */
-    private String[] getZipAsStringArray(Resource f) {
+    private static String[] getZipAsStringArray(Resource f) {
 
         SevenZFile sevenZFile = null;
         try {

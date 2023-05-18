@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import solita.citybike.models.BikeJourney;
 import solita.citybike.services.JourneyService;
 import solita.citybike.services.PopulatingService;
-import solita.citybike.services.StationService;
 
 import java.util.List;
 
@@ -23,6 +22,20 @@ public class JourneyController {
     @Autowired
     public JourneyService journeyService;
 
+    /**
+     * Returns a
+     *
+     * @param pageNumber
+     * Which page the user is on the pagination
+     * @param pageSize
+     * How many records the query fetches
+     * @param sortBy
+     * On which parameter the query sorts the results on (default = id)
+     * @param order
+     * On which parameter the query orders the results on (default = ascending)
+     * @return ResponseEntity<List<BikeJourney>>> A response entity with List of
+     * the fetched BikeJourneys as Body and HTTP Status of 200
+     */
     @GetMapping
     public ResponseEntity<List<BikeJourney>> getAllJourneys(
             @RequestParam(defaultValue = "0") Integer pageNumber,
@@ -33,9 +46,8 @@ public class JourneyController {
 
         List<BikeJourney> journeyList = this.journeyService.getAllJourneys(pageNumber, pageSize, sortBy, order);
         return new ResponseEntity<List<BikeJourney>>(journeyList, new HttpHeaders(), HttpStatus.OK);
-
-
     }
+
 
     /** Returns how many BikeJourney objects there are in total in the DB
      *
@@ -61,6 +73,5 @@ public class JourneyController {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Reading data from file failed");
     }
-
 
 }

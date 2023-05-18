@@ -1,24 +1,18 @@
 package solita.citybike.services;
 
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.tinylog.Logger;
+
 import solita.citybike.models.BikeJourney;
-import solita.citybike.models.BikeStation;
 import solita.citybike.repositories.JourneyRepository;
 import solita.citybike.repositories.StationRepository;
-import solita.citybike.utils.Unzipper;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -33,13 +27,20 @@ public class JourneyService {
     private StationRepository stationRepository;
 
 
-
+    /**
+     * Fetches journeys according to sorting and ordering parameters and returns them to the Controller
+     * @param pageNumber Which pagination page you want to query
+     * @param pageSize   How many records per page/query you want to return
+     * @param sortBy     On which parameter you want to sort the results
+     * @param order      On which parameter you want to order the results
+     * @return
+     */
 
     public List<BikeJourney> getAllJourneys(Integer pageNumber, Integer pageSize, String sortBy, String order) {
 
         Sort sort;
 
-        /* Is there a more sophisticated way to do this, feels odd*/
+        // Is there a more sophisticated way to do this, feels odd
         if(sortBy.equals("departureStation")){
             sort = Sort.by("departureStation.stationName");
         }
@@ -51,7 +52,7 @@ public class JourneyService {
         }
 
 
-        /*This can't be right*/
+        //This can't be right
         if(order.equals("asc")){
             sort = sort.ascending();
         }
@@ -73,8 +74,19 @@ public class JourneyService {
 
     }
 
+    /**
+     * Fetches how many joruneys there are in the DB
+     *
+     * @return Integer value of the journey count
+     */
     public Integer getJourneyCount(){
         return this.journeyRepository.getJourneyCount();
     }
 
+
+    public void initializeSequenceTable(){
+        this.journeyRepository.dropSequenceTable();
+        this.journeyRepository.createSequenceTable();
+        this.journeyRepository.insertSequenceStart();
+    }
 }

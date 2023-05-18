@@ -27,7 +27,18 @@ public class StationController {
     @Autowired
     private StationService stationService;
 
-
+    /**
+     *
+     * @param pageNumber
+     * Which page the user is on the pagination
+     * @param pageSize
+     * How many records the query fetches
+     * @param sortBy
+     * On which parameter the query sorts the results on (default = name of the station)
+     * @return
+     * ResponseEntity<List<BikeJourney>>> A response entity with List of
+     * the fetched BikeStations as Body and HTTP Status of 200
+     */
     @GetMapping
     public ResponseEntity<List<BikeStation>> getAllJourneys(
             @RequestParam(defaultValue = "0") Integer pageNumber,
