@@ -95,8 +95,12 @@ greedier parameters.
   
 2:
 
-  The frontend is now running on localhost:your_port so open it in your browser and you should see the web application.
+  The frontend is now running on localhost:your_port, so open it in your browser and you should see the web application.
   
+  
+If you have any issues or questions about the software, please contact me through the details
+left in the Academy application.
+
 ## Some thoughts
 
 The first design decision I had to do was regarding the large sizes of the given .csv files.
