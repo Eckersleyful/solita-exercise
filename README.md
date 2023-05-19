@@ -138,13 +138,13 @@ So I took some steps to increase the insertion efficiency:
     The memory usage allowances are very pitiful and by increasing these, I saw performance increasing.
     
     
- #About the frontend
+# About the frontend
  
 If just by looking at the frontend it wasn't clear enough, I am quite bad at designing anything that looks like it could be used by humans.
 Following a design is very much preferred as I can just leave the artistic side to more creative people.
 Also, this project really motivated me to want to get better with React and I want to be able to create more responsive and modular solutions.
 
-#There is code that could be done in a better way
+# There is code that could be done in a better way
 
 The one thing that I constantly run into in my own projects is the following:
 I need to do X. I can achieve it by doing Y, but doing Y is probably very bad due to Z.
