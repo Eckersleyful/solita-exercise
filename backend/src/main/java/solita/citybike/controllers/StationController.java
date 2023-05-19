@@ -28,6 +28,7 @@ public class StationController {
     private StationService stationService;
 
     /**
+     * Fetches BikeStations based on parameters
      *
      * @param pageNumber
      * Which page the user is on the pagination
@@ -51,6 +52,11 @@ public class StationController {
         return new ResponseEntity<List<BikeStation>>(journeyList, new HttpHeaders(), HttpStatus.OK);
     }
 
+    /**
+     * Fetches how many BikeStations there are in the DB
+     *
+     * @return The count of stations as Integer
+     */
     @GetMapping("/count")
     public ResponseEntity<Integer> stationCount(){
         return new ResponseEntity<>(this.stationService.getStationCount(), new HttpHeaders(), HttpStatus.OK);

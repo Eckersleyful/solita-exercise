@@ -89,4 +89,12 @@ public class JourneyService {
         this.journeyRepository.createSequenceTable();
         this.journeyRepository.insertSequenceStart();
     }
+
+    public List<BikeJourney> getAll(){
+        return this.journeyRepository.findAll();
+    }
+
+    public BikeJourney save(BikeJourney journey) {
+        return this.journeyRepository.save(journey);
+    }
 }

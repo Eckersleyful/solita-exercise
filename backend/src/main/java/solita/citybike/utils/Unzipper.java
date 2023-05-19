@@ -3,12 +3,14 @@ package solita.citybike.utils;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
-
+import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.tinylog.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -18,9 +20,7 @@ public class Unzipper {
 
     private static final String ZIP_LOCATION = "csv/*";
 
-    private Unzipper() {
 
-    }
 
     /**
      * Returns a list of files found at the constant of ZIP_LOCATION.
@@ -55,7 +55,7 @@ public class Unzipper {
      * @return
      */
 
-    public static ArrayList<String[]> getJourneysFromCsv(){
+    public ArrayList<String[]> getJourneysFromCsv(){
 
         Resource[] zipsInDir = getAllCsvZips();
         Logger.info("Found " + zipsInDir.length + " files in the target directory");
@@ -65,7 +65,10 @@ public class Unzipper {
         //Iterate through all the found files and return their content as an array of Strings
         for(Resource f : zipsInDir){
 
-            csvList.add(getZipAsStringArray(f));
+            if(f != null){
+                csvList.add(getZipAsStringArray(f));
+            }
+
         }
 
         Logger.info("From those " + zipsInDir.length + " zipped files, managed to unzip and read "
@@ -81,13 +84,27 @@ public class Unzipper {
      * @param f The file to be unzipped and read
      * @return An array of strings, if reading fails, an empty array of strings.
      */
-    private static String[] getZipAsStringArray(Resource f) {
+    private String[] getZipAsStringArray(Resource f) {
 
-        SevenZFile sevenZFile = null;
+
+
         try {
+            //The hackiest way ever to grab a zip file from inside the jar
 
-            sevenZFile = new SevenZFile(new File(f.getURI()));
+            //We grab the absolute path ending from the found file
+            String filePath = String.valueOf(f.getURL()).split("classes!")[1];
 
+            //Create an InputStream from the filePath because we can't create a File object
+            //directly from jar context
+            InputStream in = getClass().getResourceAsStream(filePath);
+
+            //Lord forgive me
+            File newFile = new File("dummyPath");
+
+            //Copy the InputStream content to the dummy File object
+            FileUtils.copyInputStreamToFile(in, newFile);
+
+            SevenZFile sevenZFile = new SevenZFile(newFile);
             ArchiveEntry entry = null;
 
             while ((entry = sevenZFile.getNextEntry()) != null) {
@@ -100,8 +117,8 @@ public class Unzipper {
 
                 /*
                 Create a new String from the read bytes and split it from newline operator to
-                 get each line of the file as their own element
-                 */
+                get each line of the file as their own element
+                */
                 sevenZFile.close();
                 return new String(fileContent, StandardCharsets.UTF_8).split("\n");
 

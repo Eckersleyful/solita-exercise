@@ -14,8 +14,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static solita.citybike.utils.Unzipper.*;
-
 
 @Service
 public class PopulatingService {
@@ -67,6 +65,9 @@ public class PopulatingService {
     public boolean populateData() {
 
 
+
+        Logger.info("Clearing tables for fresh data");
+
         //Clear the tables "journeys" and "stations"
         this.repository.deleteAllInBatch();
 
@@ -81,7 +82,8 @@ public class PopulatingService {
         Unzip the .csv and read their content into an ArrayList of String arrays.
         Each file's content is in one array.
          */
-        ArrayList<String[]> csvBikeJourneys = Unzipper.getJourneysFromCsv();
+        Unzipper unzipper = new Unzipper();
+        ArrayList<String[]> csvBikeJourneys = unzipper.getJourneysFromCsv();
 
         ArrayList<BikeJourney> validJourneys = new ArrayList<>();
 
@@ -92,6 +94,8 @@ public class PopulatingService {
         for(String [] s : csvBikeJourneys){
 
             boolean skipFirst = true;
+
+            Logger.info("Iterating and inserting contents of a file to DB");
 
             for(String journeyEntry : s){
 
@@ -135,7 +139,7 @@ public class PopulatingService {
                 }
 
             }
-            Logger.info("Dumping file");
+            Logger.info("Inserting file done");
 
             //Most likely there will be left over data in the list, so we insert it and clear again
             this.repository.saveAll(validJourneys);
@@ -225,7 +229,6 @@ public class PopulatingService {
         }
 
         return new BikeStation(Integer.valueOf(entryValues[idIndex]), entryValues[nameIndex]);
-
     }
 
 
@@ -247,7 +250,6 @@ public class PopulatingService {
 
         //Try to parse the dates and numeral values from the line,
         //returning a null object if the line has invalid data
-
         LocalDateTime departureDate;
         LocalDateTime returnDate;
 

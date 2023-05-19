@@ -27,7 +27,7 @@ public class JourneyBackend {
             public void addCorsMappings(CorsRegistry registry) {
                 /*
                 Wildcard all routes to be CORS-compliant.
-                ABSOLUTELY NOT PRODUCTION SAFE, JUST FOR API
+                ABSOLUTELY NOT FOR REAL-WORLD PURPOSES, JUST FOR API
                 TESTING
                  */
                 registry.addMapping("/**").allowedOrigins("*");

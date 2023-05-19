@@ -24,9 +24,11 @@ public class BikeStation {
     private String stationName;
 
     @JsonProperty
+    @Transient
     private int departingJourneysCount;
 
     @JsonProperty
+    @Transient
     private int returningJourneysCount;
 
     public int getDepartingJourneysCount() {
