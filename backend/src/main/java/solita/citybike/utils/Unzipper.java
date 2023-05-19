@@ -87,9 +87,11 @@ public class Unzipper {
     private String[] getZipAsStringArray(Resource f) {
 
 
+        Logger.info("Starting to unzip file " + f.getFilename());
 
         try {
             //The hackiest way ever to grab a zip file from inside the jar
+            //Does not work from outside of jar context
 
             //We grab the absolute path ending from the found file
             String filePath = String.valueOf(f.getURL()).split("classes!")[1];
