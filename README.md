@@ -1,8 +1,6 @@
-# Solita Dev Academy Pre-requisite task 2023
+## Solita Dev Academy Pre-requisite task 2023
 A full-stack program that implements a back-end with Spring Boot and front through React.
 The goal was to read data from .csv files into a database and create a frontend for displaying it.
-
-
 
 
 Technical requirements:
@@ -45,7 +43,7 @@ sort_buffer_size=256K
 NOTE: These are for 16GB RAM system, double/halve according to your own system specs or try even
 greedier parameters.
 
-# Backend
+## Backend
 
 1: 
 
@@ -82,7 +80,7 @@ greedier parameters.
   I have benchmarked it to run just under 10 minutes.
 
 
-# Frontend
+## Frontend
 
 1:
 
@@ -140,13 +138,13 @@ So I took some steps to increase the insertion efficiency:
     The memory usage allowances are very pitiful and by increasing these, I saw performance increasing.
     
     
- **About the frontend**
+ #About the frontend
  
 If just by looking at the frontend it wasn't clear enough, I am quite bad at designing anything that looks like it could be used by humans.
 Following a design is very much preferred as I can just leave the artistic side to more creative people.
 Also, this project really motivated me to want to get better with React and I want to be able to create more responsive and modular solutions.
 
-**There is code that could be done in a better way**
+#There is code that could be done in a better way
 
 The one thing that I constantly run into in my own projects is the following:
 I need to do X. I can achieve it by doing Y, but doing Y is probably very bad due to Z.
