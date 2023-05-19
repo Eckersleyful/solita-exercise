@@ -61,7 +61,7 @@ greedier parameters.
 
 3: 
 
-  Navigate to the project root where the Maven pom.xml resides and in a terminal of your choice run:
+  Navigate to the backend project root where the Maven pom.xml resides and in a terminal of your choice run:
 
   ```bash
   mvn package
