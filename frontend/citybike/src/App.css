@@ -1,5 +1,7 @@
 body {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(164,65,122,1) 51%, rgba(19,91,106,1) 99%);
 }
 
 h1 {
@@ -74,9 +76,10 @@ Parent div for the tab-header-div elements
 */
 .tab-list {
   display: flex;
+  
 }
 
-.tab-list-active {
+li.tab-list-item.tab-list-active {
   background-color: lightsteelblue;
 }
 
@@ -110,7 +113,7 @@ Generic parent div for all elements we want to center
   border-radius: 20%;
   border: 2px solid #1f0033;
   font-size: 1.5rem;
-  transition: transform .3s;
+  background-color: #f2f2f2;
 }
 
 /*
@@ -118,13 +121,14 @@ The Journey and Station button hover
 For some forbidden reason the transform is blurry on Chromium based browsers
 */
 .tab-header-div li:hover {
-  transform: scale(1.032) translateZ(0);
-  -webkit-transform: scale(1.032) translateZ(0);
+
   cursor: pointer;
-  filter: blur(0);
-  -webkit-filter: blur(0px);
+
 }
 
+/*
+Parent div for the pagination selectors
+*/
 .pagination-parent {
   display: flex;
   margin-top: 1rem;
@@ -143,6 +147,7 @@ For some forbidden reason the transform is blurry on Chromium based browsers
 .pagination-parent .pagination-list li{
   list-style: none;
   border: solid 1px #1f0033;
+  background-color: #f2f2f2;
   border-radius: 10%;
   float: left;
   padding: 5px 10px 5px 10px;
@@ -158,6 +163,7 @@ For some forbidden reason the transform is blurry on Chromium based browsers
 .sorting-dropdown-div {
   margin: 0.5rem;
 }
+
 .sorting-dropdown-div option, .sorting-dropdown-div select{
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-size: 0.9rem;

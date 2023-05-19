@@ -1,8 +1,6 @@
-# Solita Dev Academy Pre-requisite task 2023
+## Solita Dev Academy Pre-requisite task 2023
 A full-stack program that implements a back-end with Spring Boot and front through React.
 The goal was to read data from .csv files into a database and create a frontend for displaying it.
-
-
 
 
 Technical requirements:
@@ -45,7 +43,7 @@ sort_buffer_size=256K
 NOTE: These are for 16GB RAM system, double/halve according to your own system specs or try even
 greedier parameters.
 
-# Backend
+## Backend
 
 1: 
 
@@ -63,9 +61,9 @@ greedier parameters.
 
 3: 
 
-  Navigate to the project root where the Maven pom.xml resides and in a terminal of your choice run:
+  Navigate to the backend project root where the Maven pom.xml resides and in a terminal of your choice run:
 
-  ```
+  ```bash
   mvn package
 
   java -jar target/solita-backend-1.0-SNAPSHOT.jar solita.citybike.JourneyBackend
@@ -82,13 +80,13 @@ greedier parameters.
   I have benchmarked it to run just under 10 minutes.
 
 
-# Frontend
+## Frontend
 
 1:
 
   Navigate to the project root and then go to frontend/citybike and run:
   
-  ```
+  ```bash
   npm install
   
   npm start
@@ -98,4 +96,63 @@ greedier parameters.
 2:
 
   The frontend is now running on localhost:your_port so open it in your browser and you should see the web application.
+  
+## Some thoughts
+
+The first design decision I had to do was regarding the large sizes of the given .csv files.
+The issue was that GitHub doesn't allow files over 50MB's, which the .csv's were exceeding.
+So I had 3 choices:
+
+1:
+  Upload the files to another host and then fetch them inside the application. I wasn't fond of this idea because it felt
+  like I was just overcomplicating the issue and relying on another external service, and also possibly slowing down the data
+  initialization.
+  
+2:
+  Read the files locally to a DB and create a SQL dump file from the inserted data. I also didn't like this approach because I
+  wasn't sure if the large .csv files were a "test" to see how would you go about inserting large amounts of data.
+    
+3:
+  Zip the data, allowing it to be hosted on the GitHub repo. Unzipping is a cheap computational process and only took about ten seconds
+  per file.
+  
+**About bulk inserting the data:**
+When I first started the data insertion, it took nearly 45 minutes which is unacceptable.
+So I took some steps to increase the insertion efficiency:
+
+  - First, insert in batches so we reduce total amount of queries massively. Testing different batch sizes,
+  I found the best performance at 25 000. There might be better parameters, but this worked well enough.
+  
+  - Secondly, caching a needed entity that was being queried for each saved object.
+    Everytime we wanted to save Object A we needed to query for Object B to embed it, resulting
+    in a wild amount of DB lookups. Caching eliminated this completely while not avoiding performance, as the
+    cached table was rather small (400 rows).
+    
+  - Third, using a sequence table for generating the ID for the object being saved. Normally with GENERATIONTYPE.IDENTITY you run into an issue
+    with batch statements that Spring is not aware of the saveable objects ID before saving. This means that bulk inserts can become as slow as single inserts.
+    We combat this with a sequence table that holds the last known ID of an inserted record. This will be incremented once after a bulk insert.
+    So if the ID in the table is 12500, Spring will assign the entities 125001, 125002 and so on. Then it will just once update the sequence table.
+    After for example inserting 500 records, the sequence value would be 13000. 
+    
+  - Fourth, very simply, just allowing MySQL to use more resources. I am pretty sure the default settings of MySQL on installation are for systems from 2008.
+    The memory usage allowances are very pitiful and by increasing these, I saw performance increasing.
+    
+    
+# About the frontend
+ 
+If just by looking at the frontend it wasn't clear enough, I am quite bad at designing anything that looks like it could be used by humans.
+Following a design is very much preferred as I can just leave the artistic side to more creative people.
+Also, this project really motivated me to want to get better with React and I want to be able to create more responsive and modular solutions.
+
+# There is code that could be done in a better way
+
+The one thing that I constantly run into in my own projects is the following:
+I need to do X. I can achieve it by doing Y, but doing Y is probably very bad due to Z.
+And I try to browse stack threads and ask from different communities which is the "correct" way
+of achieving it but more often than not, I am left without a clear answer.
+Which leads to, as always, this project probably having some subpar solutions, from which I would
+love to hear feedback from.
+
+All in all, I really enjoyed this project and got to do different kinds of stuff, and got better at doing that stuff.
+
   
