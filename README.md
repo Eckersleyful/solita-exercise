@@ -148,6 +148,14 @@ If just by looking at the frontend it wasn't clear enough, I am quite bad at des
 Following a design is very much preferred as I can just leave the artistic side to more creative people.
 Also, this project really motivated me to want to get better with React and I want to be able to create more responsive and modular solutions.
 
+# About tests
+
+I rarely get frustrated when coding but spending a whole day trying to figure out why my test class Spring Bean injections
+were not working really tested me. I originally wanted to run the tests through Surefire whenever the project was built, and well,
+Surefire worked but my test classes didn't. I could not for the life of me get JUnit to pick up my Repo/Service beans and ultimately,
+I had to give up to save my last slivers of sanity.
+
+
 # There is code that could be done in a better way
 
 The one thing that I constantly run into in my own projects is the following:
